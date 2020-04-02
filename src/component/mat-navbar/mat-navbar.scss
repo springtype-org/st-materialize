@@ -1,0 +1,29 @@
+.dropdown-content.show {
+  display: block;
+  opacity: 1;
+  transform-origin: 100% 0;
+  transform: scaleX(1) scaleY(1);
+}
+
+@media only screen and (max-width: 600px) {
+  nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
+    height: 56px;
+    line-height: 56px;
+  }
+  .navbar .navbar-main {
+    padding: 0 !important;
+  }
+}
+
+
+@media (min-width: 600px) {
+  .navbar .navbar-main {
+    padding: 0 8px 0 8px !important;
+  }
+}
+
+@media (min-width: 993px) {
+  .navbar .navbar-main {
+    padding: 0 15px 0 15px !important;
+  }
+}
