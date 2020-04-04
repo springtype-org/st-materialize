@@ -1,0 +1,7 @@
+.mat-icon svg{
+  height: 28px;
+  width: 28px;}
+
+.mat-icon.active svg{
+  fill: $input-focus-color;
+}

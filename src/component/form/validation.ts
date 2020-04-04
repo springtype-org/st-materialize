@@ -4,8 +4,13 @@ import {IValidator} from "springtype/core/validate/interface/ivalidator";
 
 export const DEFAULT_VALIDATION_EVENTS = ["change", "keyup"];
 
+export interface IAttrValidation {
+    eventListeners: Array<string>;
+    validators: Array<IValidator>;
+}
+
 @component
-export class Validation extends st.staticComponent {
+export class Validation extends st.component<IAttrValidation> {
 
     @attr
     eventListeners: Array<string> = DEFAULT_VALIDATION_EVENTS;
@@ -13,10 +18,6 @@ export class Validation extends st.staticComponent {
     @attr
     validators: Array<IValidator> = [];
 
-    @attr
-    converter: (value: string | boolean) => any;
-
-    value: string;
 
     render() {
         return this.renderChildren()
@@ -62,6 +63,7 @@ export class Validation extends st.staticComponent {
             default:
                 value = input.value
         }
+        st.debug(value)
     }
 
     onTextAreaValidation(textArea: HTMLTextAreaElement) {

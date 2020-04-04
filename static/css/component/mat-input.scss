@@ -1,0 +1,17 @@
+.mat-input-helper-counter {
+  display: flex;
+}
+
+.mat-input-helper-counter .helper-text {
+  flex: 1;
+}
+
+.mat-input-helper-counter .character-counter {
+  flex: 0;
+  text-align: right;
+  font-size: 12px;
+}
+
+.mat-input-helper-counter .character-counter.hide {
+  display: none;
+}

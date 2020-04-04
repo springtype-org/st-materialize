@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "skipLibCheck": true,
+    "jsxFactory": "tsx",
+    "experimentalDecorators": true
+  },
+  "exclude": ["node_modules"],
+  "include": ["src","e2e"]
+}
