@@ -61,7 +61,7 @@ export class InputPage extends st.component {
                     </div>
                     <div class={['col', 's12']}>
                         <MatInput label={'Own svg icon'} value={"Own svg icon"}>
-                            <MatIcon src={require('../../static/icon/create-24px.svg')} class={['prefix']}/>
+                            <MatIcon src={require('../../static/icon/springtype-logo.svg')} class={['prefix']}/>
                         </MatInput>
                         <MatInput label={'Material Icons'} value={"Material Icons"}>
                             <i class="material-icons prefix">mode_edit</i>
