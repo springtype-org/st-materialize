@@ -1,3 +1,4 @@
 st-materialize.iml
 .idea
 node_modules
+dist

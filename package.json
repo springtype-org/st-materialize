@@ -1,6 +1,6 @@
 {
   "name": "st-materialize",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "publishConfig": {
     "access": "public"
   },
@@ -8,7 +8,7 @@
   "scripts": {
     "clean": "st-run st-rm-rf dist",
     "prebuild": "yarn clean",
-    "build": "tsc -p tsconfig.dist.json",
+    "build": "tsc",
     "postbuild": "st-run st-cp package.json .npmignore README.md LICENSE static/index.scss static/scss dist"
   },
   "author": "Michael Mannseicher <m.mansi1@gmx.net> & Aron Homberg <info@aron-homberg.de>",
