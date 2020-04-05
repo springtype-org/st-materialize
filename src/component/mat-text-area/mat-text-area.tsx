@@ -8,36 +8,33 @@ import {Validation} from "../form/validation";
 import {IVirtualNode} from "springtype/web/vdom/interface";
 import {TYPE_UNDEFINED} from "springtype/core/lang";
 import {IValidator} from "springtype/core/validate/interface/ivalidator";
-import {maxLength, minLength, pattern, required} from "springtype/core/validate";
-import {min} from "../validate/min";
-import {max} from "../validate/max";
+import {maxLength, minLength, required} from "springtype/core/validate";
 
-export interface IAttrMatTextInput {
-    label?: string | IVirtualNode;
-    helperText?: string | IVirtualNode;
-    characterCounter?: boolean;
-    validators?: Array<IValidator>;
-    validationErrorMessages?: { [error: string]: string | IVirtualNode };
-    validationSuccessMessage?: string;
+export interface IAttrMatTextArea {
+    label: string | IVirtualNode;
+    helperText: string | IVirtualNode;
+    characterCounter: boolean;
+    validators: Array<IValidator>;
+    validationErrorMessages: { [error: string]: string | IVirtualNode };
+    validationSuccessMessage: string;
     formIgnore?: boolean;
 
     name: string;
     value?: string;
-    type?: 'text' | 'email' | 'number' | 'password' | 'date';
+    spellcheck?: boolean;
+    wrap?: 'hard' | 'soft' | 'off';
+    rows?: number;
+    autocomplete?: 'on' | 'off';
     placeholder?: string;
     readonly?: boolean;
     maxLength?: number;
     minLength?: number;
-    pattern?: RegExp;
     required?: boolean;
-    max?: number | Date;
-    min?: number | Date;
-    step?: number;
     hidden?: boolean;
 }
 
 @component
-export class MatInput extends st.component<IAttrMatTextInput> implements ILifecycle {
+export class MatTextArea extends st.component<IAttrMatTextArea> implements ILifecycle {
 
     @attr
     label: string | IVirtualNode = '';
@@ -56,7 +53,6 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
 
     @attr
     validationSuccessMessage: string = '';
-
     /**
      * this field will be ignored by from state
      */
@@ -64,7 +60,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     formIgnore: boolean = false;
 
     /**
-     * Input specific stuff
+     * text-area specific stuff
      */
     @attr
     name!: string;
@@ -73,7 +69,16 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     value!: string;
 
     @attr
-    type: 'text' | 'email' | 'number' | 'password' | 'date' = 'text';
+    spellcheck!: boolean;
+
+    @attr
+    wrap!: 'hard' | 'soft' | 'off';
+
+    @attr
+    rows!: number;
+
+    @attr
+    autocomplete!: 'on' | 'off';
 
     @attr
     placeholder!: string;
@@ -88,26 +93,14 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     minLength!: number;
 
     @attr
-    pattern!: RegExp;
-
-    @attr
     required!: boolean;
-    //for range
-    @attr
-    max!: number | Date;
-
-    @attr
-    min!: number | Date;
-
-    @attr
-    step!: number;
 
     //hide the complete object
     @attr
     hidden!: boolean;
 
     @ref
-    inputRef!: HTMLInputElement;
+    textAreaRef!: HTMLTextAreaElement;
 
     @ref
     labelRef!: HTMLLabelElement;
@@ -118,12 +111,12 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     @ref
     counterRef!: HTMLSpanElement;
 
-    inputId: string;
+    textAreaId: string;
 
 
     constructor() {
         super();
-        this.inputId = getUniqueHTMLId();
+        this.textAreaId = getUniqueHTMLId();
     }
 
     render() {
@@ -137,15 +130,6 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
         }
         if (typeof this.minLength !== TYPE_UNDEFINED) {
             internalValidators.push(minLength(this.minLength))
-        }
-        if (typeof this.pattern !== TYPE_UNDEFINED) {
-            internalValidators.push(pattern(this.pattern))
-        }
-        if (typeof this.max !== TYPE_UNDEFINED) {
-            internalValidators.push(min(this.min))
-        }
-        if (typeof this.min !== TYPE_UNDEFINED) {
-            internalValidators.push(max(this.max))
         }
 
 
@@ -161,32 +145,37 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
         }
         if (this.label) {
             label = <label ref={{labelRef: this}}
-                           class={[this.value || this.placeholder || this.type === 'date' ? 'active' : '']}
-                           for={this.inputId}>{this.label}</label>
+                           class={[this.value || this.placeholder ? 'active' : '']}
+                           for={this.textAreaId}>{this.label}</label>
         }
         return <Validation validators={internalValidators}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
-                <input ref={{inputRef: this}} attrs={{
-                    id: this.inputId,
-                    name: this.name,
-                    type: this.type,
-                    value: this.value,
-                    step: this.step,
-                    placeholder: this.placeholder,
-                    disabled: this.disabled,
-                    readOnly: this.readonly,
-                    //validation
-                    required: this.required,
-                    minLength: this.minLength,
-                    maxLength: this.maxLength,
-                    min: this.prepareRange(this.min),
-                    max: this.prepareRange(this.max),
-                    pattern: this.pattern ? this.pattern.toString() : undefined,
-                }}
-                       onInput={() => this.onCharacterCounterUpdate()}
-                       onFocus={() => this.onInputFocus()}
-                       onBlur={() => this.onInputBlur()}/>
+                <textarea ref={{textAreaRef: this}} class={['materialize-textarea']}
+                          style={{height: `${this.getHeight(this.value)}px`}}
+                          attrs={{
+                              id: this.textAreaId,
+                              name: this.name,
+                              placeholder: this.placeholder,
+                              disabled: this.disabled,
+                              readOnly: this.readonly,
+                              spellcheck: this.spellcheck,
+                              wrap: this.wrap,
+                              rows: this.rows,
+                              autocomplete: this.autocomplete,
+                              //validation
+                              required: this.required,
+                              minLength: this.minLength,
+                              maxLength: this.maxLength,
+                          }}
+                          onInput={() => {
+                              this.onHeightChange();
+                              this.onCharacterCounterUpdate();
+                          }}
+                          onFocus={() => this.onInputFocus()}
+                          onBlur={() => this.onInputBlur()}>
+                    {this.value}
+                </textarea>
                 {label}{spanHelperTextAndCounter}
 
             </div>
@@ -196,7 +185,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     onAfterRender(): void {
         super.onAfterRender();
         if (this.formIgnore) {
-            this.inputRef.setAttribute('form-ignore', '');
+            this.textAreaRef.setAttribute('form-ignore', '');
         }
     }
 
@@ -216,9 +205,37 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
             this.counterRef.classList.remove('hide');
         }
     };
+
+    onHeightChange() {
+        const value = this.textAreaRef.value;
+        this.textAreaRef.setAttribute('style', `height: ${this.getHeight(value)}px`);
+    }
+
+    getHeight(value: string) {
+        const lineHeight = this.getValueHeight(value);
+        const defaultLineHeight = this.getDefaultHeight();
+        return lineHeight > defaultLineHeight ? lineHeight : defaultLineHeight;
+    }
+
+    getValueHeight(value: string) {
+        if (value) {
+            const lines = value.split(/\r*\n/).length;
+            return ((lines - 1) * 21) + 45;
+        }
+
+        return 54
+    }
+
+    getDefaultHeight() {
+        if (this.rows) {
+            return ((this.rows - 1) * 21) + 45;
+        }
+        return 45;
+    }
+
     onCharacterCounterUpdate = () => {
         if (this.counterRef) {
-            this.counterRef.innerText = this.getCharacterCountText(this.inputRef.value);
+            this.counterRef.innerText = this.getCharacterCountText(this.textAreaRef.value);
         }
     };
 
@@ -234,7 +251,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     }
 
     onInputBlur = () => {
-        if (this.labelRef && !this.inputRef.value && this.type !== 'date' && !this.placeholder) {
+        if (this.labelRef && !this.textAreaRef.value && !this.placeholder) {
             this.labelRef.classList.remove('active');
         }
         const matIcon = this.el.querySelector('.mat-icon');
@@ -246,27 +263,4 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
             materialIcon.classList.remove('active')
         }
     };
-
-    formatDate(date: Date) {
-        let month = '' + (date.getMonth() + 1);
-        let day = '' + date.getDate();
-        let year = date.getFullYear();
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-        return [year, month, day].join('-');
-    }
-
-    prepareRange(range: number | Date): string | undefined {
-        if (typeof range !== TYPE_UNDEFINED) {
-            if (range instanceof Date) {
-                return this.formatDate(range);
-            } else {
-                return range.toString();
-            }
-        }
-    }
 }

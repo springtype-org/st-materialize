@@ -1,8 +1,8 @@
 import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
-import {MatInput} from "../../../src/component/mat-input/mat-input";
-import {MatIcon} from "../../../src/component/mat-icon/mat-icon";
+import {MatIcon, MatInput} from "../../../src/component";
+import {required} from "springtype/core/validate";
 
 @component
 export class InputPage extends st.component {
@@ -10,10 +10,12 @@ export class InputPage extends st.component {
     render() {
         return <div class={'container'}>
             <form>
-
                 <div class={'row'}>
+                    <div class={['col', 's12']} >
+                        <h4>Mat-Input</h4>
+                    </div>
                     <div class={['col', 's12']}>
-                        <MatInput label={'Test me I am a text'}/>
+                        <MatInput label={'Test me I am a text'} formIgnore={true}/>
                     </div>
                     <div class={['col', 's12']}>
                         <MatInput label={'Placeholder here'} placeholder={'Placeholder here'}/>
@@ -63,18 +65,28 @@ export class InputPage extends st.component {
                         <MatInput label={'Own svg icon'} value={"Own svg icon"}>
                             <MatIcon src={require('../../static/icon/springtype-logo.svg')} class={['prefix']}/>
                         </MatInput>
+                    </div>
+                    <div class={['col', 's12']}>
                         <MatInput label={'Material Icons'} value={"Material Icons"}>
                             <i class="material-icons prefix">mode_edit</i>
                         </MatInput>
+                    </div>
+                    <div class={['col', 's12']}>
                         <MatInput label={'Character counter'} characterCounter={true}/>
+                    </div>
+                    <div class={['col', 's12']}>
                         <MatInput label={'Character counter with value '} characterCounter={true} value={'1234'}/>
+                    </div>
+                    <div class={['col', 's12']}>
                         <MatInput label={'Character counter with value and maxlength'} characterCounter={true}
                                   value={'yeah!!!'} maxLength={120}/>
-                        <MatInput label={'Address'} characterCounter={true}
+                    </div>
+                    <div class={['col', 's12']}>
+                        <MatInput validators={[required]} label={'Address'} characterCounter={true}
                                   helperText={'required *'}
                                   value={'Schnaupping 16'} maxLength={20}/>
                     </div>
-                    <button type={"submit"}>submit</button>
+                    <button class="btn" type={"submit"}>submit</button>
                 </div>
             </form>
         </div>
