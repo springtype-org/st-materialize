@@ -7,14 +7,13 @@ import {getUniqueHTMLId} from "../../function/get-unique-html-id";
 import {Validation} from "../form/validation";
 import {IVirtualNode} from "springtype/web/vdom/interface";
 import {TYPE_UNDEFINED} from "springtype/core/lang";
-import {IValidator} from "springtype/core/validate/interface/ivalidator";
 import {maxLength, minLength, required} from "springtype/core/validate";
 
 export interface IAttrMatTextArea {
     label: string | IVirtualNode;
     helperText: string | IVirtualNode;
     characterCounter: boolean;
-    validators: Array<IValidator>;
+    validators: Array<(value: string) => Promise<boolean>>;
     validationErrorMessages: { [error: string]: string | IVirtualNode };
     validationSuccessMessage: string;
     formIgnore?: boolean;
@@ -46,7 +45,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     characterCounter: boolean = false;
 
     @attr
-    validators: Array<IValidator> = [];
+    validators: Array<(value: string) => Promise<boolean>> = [];
 
     @attr
     validationErrorMessages: { [error: string]: string | IVirtualNode } = {};
@@ -120,7 +119,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     }
 
     render() {
-        const internalValidators: Array<IValidator> = this.validators;
+        const internalValidators = this.validators;
 
         if (typeof this.required !== TYPE_UNDEFINED) {
             internalValidators.push(required)

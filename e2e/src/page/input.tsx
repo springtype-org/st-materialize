@@ -15,7 +15,7 @@ export class InputPage extends st.component {
                         <h4>MatInput</h4>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatInput label={'Test me I am a text'} formIgnore={true} />
+                        <MatInput label={'Test me I am a text'} formIgnore={true} validators={[required]}/>
                     </div>
                     <div class={['col', 's12']}>
                         <MatInput label={'Placeholder here'} placeholder={'Placeholder here'} />

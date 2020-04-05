@@ -16,7 +16,7 @@ export interface IAttrMatTextInput {
     label?: string | IVirtualNode;
     helperText?: string | IVirtualNode;
     characterCounter?: boolean;
-    validators?: Array<IValidator>;
+    validators?: Array<(value: string | number | Date) => Promise<boolean>>;
     validationErrorMessages?: { [error: string]: string | IVirtualNode };
     validationSuccessMessage?: string;
     formIgnore?: boolean;
@@ -49,7 +49,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     characterCounter: boolean = false;
 
     @attr
-    validators: Array<IValidator> = [];
+    validators: Array<(value: string | number | Date) => Promise<boolean>> = [];
 
     @attr
     validationErrorMessages: { [error: string]: string | IVirtualNode } = {};
@@ -127,7 +127,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     }
 
     render() {
-        const internalValidators: Array<IValidator> = this.validators;
+        const internalValidators = this.validators;
 
         if (typeof this.required !== TYPE_UNDEFINED) {
             internalValidators.push(required)
