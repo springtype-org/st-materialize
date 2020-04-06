@@ -137,15 +137,16 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
             internalValidators.push(minLength(this.minLength))
         }
 
-        let  label;
+        let label;
 
         if (this.label) {
             label = <label ref={{labelRef: this}}
                            class={[this.value || this.placeholder ? 'active' : '']}
                            for={this.textAreaId}>{this.label}</label>
         }
-        return <Validation validators={mergeArrays(internalValidators, this.validators)} onValidation={(evt) => this.onAfterValidate(evt)}>
-            <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}} >
+        return <Validation validators={mergeArrays(internalValidators, this.validators)}
+                           onValidation={(evt) => this.onAfterValidate(evt)}>
+            <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
                 <textarea ref={{textAreaRef: this}} class={['materialize-textarea']}
                           style={{height: `${this.getHeight(this.value)}px`}}
@@ -173,10 +174,9 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                     {this.value}
                 </textarea>
                 {label}
-                <div ref={{helperTextRef: this}} class="mat-input-helper-counter helper-text" data-success={this.validationSuccessMessage}>
-                <span class="helper-text"
-                      style="flex: 1">{this.helperText}
-                </span>
+                <div ref={{helperTextRef: this}} class="mat-input-helper-counter helper-text"
+                     data-success={this.validationSuccessMessage}>
+                    <span style={{flex:1}}>{this.helperText}</span>
                     <span ref={{counterRef: this}}
                           class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>
                         {this.getCharacterCountText(this.value)}
@@ -279,7 +279,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                 if (error) {
                     this.helperTextRef.setAttribute("data-error", error);
                 }
-            } else if(this.setValidClass) {
+            } else if (this.setValidClass) {
                 this.textAreaRef.classList.add('valid');
             }
         }

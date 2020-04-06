@@ -1,11 +1,10 @@
 import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
-import {MatIcon, MatTextArea} from "../../../src/component";
+import {Form, MatIcon, MatTextArea} from "../../../dist";
 import {required} from "springtype/core/validate";
-import {Form} from "../../../src/component/form/form";
 import {ref} from "springtype/core/ref";
-import { Container } from "../cmp/container";
+import {Container} from "../cmp/container";
 
 @component
 export class TextAreaPage extends st.component {
@@ -21,8 +20,7 @@ export class TextAreaPage extends st.component {
                     </div>
                     <div class={['col', 's12']}>
                         <MatTextArea name="formIgnore" label={'Test me I am a text'} formIgnore={true}
-                                     validators={[required]}
-                                     validationErrorMessages={{'required': 'hey please set me'}}/>
+                                     validationErrorMessages={{'min-length': 'huhu min length'}} minLength={8} helperText={'min-length 8'} />
                     </div>
                     <div class={['col', 's12']}>
                         <MatTextArea name="placeholder" label={'Placeholder here'} placeholder={'Placeholder here'}/>
@@ -72,11 +70,12 @@ export class TextAreaPage extends st.component {
                         <MatTextArea name="withCharacterCounter" label={'Character counter'} characterCounter={true}/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatTextArea name="characterCounterAndValue" label={'Character counter with value '} characterCounter={true} value={'1234'}/>
+                        <MatTextArea name="characterCounterAndValue" label={'Character counter with value '}
+                                     characterCounter={true} value={'1234'}/>
                     </div>
                     <div class={['col', 's12']}>
                         <MatTextArea name="characterCounterAndValueAndMaxlength120"
-                            label={'Character counter with value and maxlength'} characterCounter={true}
+                                     label={'Character counter with value and maxlength'} characterCounter={true}
                                      value={'yeah!!!'} maxLength={120}/>
                     </div>
                     <div class={['col', 's12']}>
@@ -85,13 +84,15 @@ export class TextAreaPage extends st.component {
                                      value={'Schnaupping 16'} maxLength={20}/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatTextArea name="rows2AndValue" label={'2 rows'} characterCounter={true} maxLength={50} rows={2}
+                        <MatTextArea name="rows2AndValue" label={'2 rows'} characterCounter={true} maxLength={50}
+                                     rows={2}
                                      value="sdfsdfsdfsdfsdfdfss
 dfsfdfdssfdfsds
 fdsfdfsd"/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatTextArea name="rows2NoValue" label={'2 rows'} characterCounter={true} maxLength={50} rows={2}/>
+                        <MatTextArea name="rows2NoValue" label={'2 rows'} characterCounter={true} maxLength={50}
+                                     rows={2}/>
                     </div>
                     <div class={['col', 's12']}>
                         <Container tag={"center"}>
@@ -105,7 +106,7 @@ fdsfdfsd"/>
 
     async submitForm() {
         const formValidationResult = await this.formRef.validate<any>(true);
-        console.log('formValidationResult', formValidationResult,this.formRef.getState());
+        console.log('formValidationResult', formValidationResult, this.formRef.getState());
     }
 
 }

@@ -4,12 +4,12 @@ import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function/get-unique-html-id";
-import {Validation, ValidationEventDetail} from "../form/validation";
+import {Validation, ValidationEventDetail} from "../form";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, pattern, required} from "springtype/core/validate";
 import {min} from "../validate/min";
 import {max} from "../validate/max";
-import {FORM_IGNORE_PROPERTY_NAME} from "../form/form";
+import {FORM_IGNORE_PROPERTY_NAME} from "../form";
 import {matGetConfig} from "../../config";
 
 export interface IAttrMatTextInput {
@@ -185,9 +185,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                 {label}
                 <div ref={{helperTextRef: this}} class="helper-text mat-input-helper-counter"
                      data-success={this.validationSuccessMessage}>
-                <span class="helper-text"
-                      style="flex: 1">{this.helperText}
-                </span>
+                <span style={{flex:1}}>{this.helperText}</span>
                     <span ref={{counterRef: this}}
                           class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>
                         {this.getCharacterCountText(this.value)}

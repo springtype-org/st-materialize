@@ -1,10 +1,9 @@
 import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
-import {MatCheckbox} from "../../../src/component";
 import {Container} from "../cmp/container";
 import {ref} from "springtype/core/ref";
-import {Form} from "../../../src/component/form/form";
+import {Form, MatCheckbox} from "../../../dist";
 
 @component
 export class CheckboxPage extends st.component {
@@ -52,7 +51,7 @@ export class CheckboxPage extends st.component {
 
     async submitForm() {
         const formValidationResult = await this.formRef.validate<any>(true);
-        console.log('formValidationResult', formValidationResult,this.formRef.getState());
+        console.log('formValidationResult', formValidationResult, this.formRef.getState());
     }
 
 }
