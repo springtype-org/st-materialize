@@ -7,7 +7,7 @@ const VALIDATOR_NAME = 'min';
 
 export const min = (minimum: number | Date) => validatorNameFactory((value: number | Date): boolean => {
     if (typeof value === TYPE_STRING) {
-        st.error('validator min can not be applied on string values')
+        st.error('validator min can not be applied on string values',value)
     }
     if (typeof value === 'number' || value instanceof Date) {
         return value >= minimum;

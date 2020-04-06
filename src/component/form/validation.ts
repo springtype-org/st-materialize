@@ -1,31 +1,41 @@
-import {attr, component} from "springtype/web/component";
+import {attr, component, event} from "springtype/web/component";
 import {st} from "springtype/core";
-
-export const DEFAULT_VALIDATION_EVENTS = ["change", "keyup"];
+import {IEventListener} from "springtype/web/component/interface";
+import {matGetConfig} from "../../config";
 
 export interface IAttrValidation {
-    eventListeners: Array<string>;
-    validators: Array<(value: string | number | Date) => Promise<boolean>>;
+    eventListeners?: Array<string>;
+    validators?: Array<(value: any) => Promise<boolean>>;
+    onValidation?: IEventListener<ValidationEventDetail>;
+
 }
 
 export interface IValidationState {
     valid: boolean;
     validated: boolean;
-    errors: [];
-    value: string | Date | boolean | number;
+    errors: Array<string>;
+    value: boolean | string | number | Date | undefined | null;
 }
+
+export interface ValidationEventDetail extends IValidationState {
+}
+
+export const VALIDATION_PROPERTY_NAME = "MAT_VALIDATION";
 
 @component
 export class Validation extends st.component<IAttrValidation> {
 
     @attr
-    eventListeners: Array<string> = DEFAULT_VALIDATION_EVENTS;
+    eventListeners: Array<string> = matGetConfig().validationEventListener;
 
     @attr
-    debounceTimeInMs: number = 250;
+    debounceTimeInMs: number = matGetConfig().validationDebounceTimeInMs;
 
     @attr
-    validators: Array<(value: string | number | Date) => Promise<boolean>> = [];
+    validators: Array<(value: any) => Promise<boolean>> = [];
+
+    @event
+    onValidation!: IEventListener<ValidationEventDetail>;
 
     target!: HTMLTextAreaElement | HTMLInputElement;
 
@@ -34,6 +44,17 @@ export class Validation extends st.component<IAttrValidation> {
     timeout!: any;
 
     state!: IValidationState;
+
+    dispatchValidation = (detail: ValidationEventDetail) => {
+        this.dispatchEvent<ValidationEventDetail>("validation", {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+            detail: {
+                ...detail,
+            },
+        });
+    };
 
     render() {
         return this.renderChildren()
@@ -65,8 +86,9 @@ export class Validation extends st.component<IAttrValidation> {
         }
         if (!this.target) {
             st.error('Validator, missing textarea or input child')
+        }else{
+            (this.target as any)[VALIDATION_PROPERTY_NAME] = this;
         }
-        st.debug('this.validators', this.validators)
     }
 
     async validate(force: boolean = false): Promise<boolean> {
@@ -76,7 +98,7 @@ export class Validation extends st.component<IAttrValidation> {
         }
 
         try {
-            return await new Promise<IValidationState>((resolve, reject) => {
+            return await new Promise<boolean>((resolve, reject) => {
                     this.validationReject = reject;
                     clearTimeout(this.timeout);
                     this.timeout = setTimeout(async () => {
@@ -88,90 +110,87 @@ export class Validation extends st.component<IAttrValidation> {
                                 let valid = true;
 
                                 if (this.target.type === 'radio') {
-                                    const validationState = await this.doRadioValidation(value);
-                                    valid = validationState.valid;
-                                    this.state = Object.freeze(validationState);
+                                    //TODO: validate radio buttons
+                                    /* const validationState = await this.doRadioValidation(value);
+                                     valid = validationState.valid;
+                                     this.state = Object.freeze(validationState);*/
                                 } else {
                                     const errors: Array<string> = [];
                                     for (const validator of this.validators) {
-                                        console.log('validating', (validator as any)['VALIDATOR_NAME']);
                                         if (!await validator(value)) {
                                             valid = false;
                                             errors.push((validator as any)['VALIDATOR_NAME']);
                                         }
                                     }
-                                    this.state = Object.freeze({validated: true, value, valid, errors});
+                                    this.state = Object.freeze({validated: true, value: value, valid: valid, errors: errors});
+                                    this.dispatchValidation(this.state);
                                 }
 
                                 this.target.setCustomValidity(valid ? '' : ' ');
                                 resolve(valid);
                             }
-
                         },
                         this.debounceTimeInMs
                     )
                 }
             );
         } catch (e) {
+            return false;
         }
     }
 
-    async doRadioValidation(value: string): Promise<IValidationSate> {
-        let valid = true;
-        const errors: Array<string> = [];
-        let parent = (this.el as HTMLInputElement).form;
-        if (parent) {
-            const elements = parent.elements;
-            if (elements.namedItem(this.name) instanceof RadioNodeList) {
-                const radioList = elements.namedItem(this.name) as RadioNodeList;
-                for (const radioInput of nodeListToArray<any>(radioList)) {
-                    if (radioInput.$stComponent) {
-                        // const component = (radioInput as any).$stComponent;
-                        const validators = radioInput.$stComponent.validators;
-                        if (validators.length > 0) {
-                            for (const validator of validators) {
-                                if (!await validator(value)) {
-                                    valid = false;
-                                    errors.push((validator as any)[VALIDATION_VALIDATOR_NAME]);
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-                for (let i = 0; i < radioList.length; i++) {
-                    const radioInput = radioList.item(i);
-                    if (radioList && (radioInput as any).$stComponent) {
-                        const component = (radioInput as any).$stComponent as Input;
-                        component.validationState = ({valid, errors, value});
-                        component.updateValidation();
-                    }
-                }
-            }
-        }
-        return {validated: true, valid, errors, value}
-    }
+    /* async doRadioValidation(value: string): Promise<IValidationState> {
+         let valid = true;
+         const errors: Array<string> = [];
+         let parent = (this.el as HTMLInputElement).form;
+         if (parent) {
+             const elements = parent.elements;
+             if (elements.namedItem(this.target.name) instanceof RadioNodeList) {
+                 const radioList = elements.namedItem(this.target.name) as RadioNodeList;
+                 for (const radioInput of nodeListToArray<any>(radioList)) {
+                     if (radioInput.$stComponent) {
+                         // const component = (radioInput as any).$stComponent;
+                         const validators = radioInput.$stComponent.validators;
+                         if (validators.length > 0) {
+                             for (const validator of validators) {
+                                 if (!await validator(value)) {
+                                     valid = false;
+                                     errors.push((validator as any)['VALIDATOR_NAME']);
+                                 }
+                             }
+                             break;
+                         }
+                     }
+                 }
+                 for (let i = 0; i < radioList.length; i++) {
+                     const radioInput = radioList.item(i);
+                     if (radioList && (radioInput as any).$stComponent) {
+                         const component = (radioInput as any).$stComponent as Input;
+                         component.validationState = ({valid, errors, value});
+                         component.updateValidation();
+                     }
+                 }
+             }
+         }
+         return {validated: true, valid, errors, value}
+     }*/
 
     onTargetEvent = (eventListener: string) => (evt: Event) => {
         if (this.target === evt.target) {
             //do validation
-            try {
-
-
-                this.validate();
-            } catch (e) {
-
-            }
+            this.validate();
         }
     };
 
-    getValue() {
+    getValue(): string | number | boolean | Date | null | undefined {
+        let value;
         if (this.target instanceof HTMLInputElement) {
-            return this.getInputValue(this.target);
+            value = this.getInputValue(this.target);
         }
         if (this.target instanceof HTMLTextAreaElement) {
-            return this.getTextAreaValue(this.target);
+            value = this.getTextAreaValue(this.target);
         }
+        return value;
     }
 
     getInputValue(input: HTMLInputElement): boolean | string | number | Date | null {
@@ -187,15 +206,15 @@ export class Validation extends st.component<IAttrValidation> {
                 const form = (this.el as HTMLInputElement).form;
                 if (form &&
                     form.elements &&
-                    form.elements.namedItem(this.name) &&
-                    form.elements.namedItem(this.name) instanceof RadioNodeList) {
-                    return (form.elements.namedItem(this.name) as RadioNodeList).value;
+                    form.elements.namedItem(this.target.name) &&
+                    form.elements.namedItem(this.target.name) instanceof RadioNodeList) {
+                    return (form.elements.namedItem(this.target.name) as RadioNodeList).value;
                 }
         }
-        return input.value
+        return input.value || ''
     }
 
     getTextAreaValue(textArea: HTMLTextAreaElement): string {
-        return textArea.value;
+        return textArea.value || '';
     }
 }

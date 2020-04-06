@@ -1,9 +1,13 @@
 .mat-input-helper-counter {
-  display: flex;
+  display: flex !important;
 }
 
 .mat-input-helper-counter .helper-text {
   flex: 1;
+}
+
+.mat-input-helper-counter .character-counter{
+  color: rgba(0, 0, 0, 0.54) !important;
 }
 
 .mat-input-helper-counter .character-counter {

@@ -1,13 +1,15 @@
 import {st} from "springtype/core";
-import {ILifecycle} from "springtype/web/component/interface";
+import {IEvent, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function/get-unique-html-id";
-import {Validation} from "../form/validation";
+import {Validation, ValidationEventDetail} from "../form/validation";
 import {IVirtualNode} from "springtype/web/vdom/interface";
-import {TYPE_UNDEFINED} from "springtype/core/lang";
+import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, required} from "springtype/core/validate";
+import {FORM_IGNORE_PROPERTY_NAME} from "../form/form";
+import {matGetConfig} from "../../config";
 
 export interface IAttrMatTextArea {
     label: string | IVirtualNode;
@@ -17,6 +19,7 @@ export interface IAttrMatTextArea {
     validationErrorMessages: { [error: string]: string | IVirtualNode };
     validationSuccessMessage: string;
     formIgnore?: boolean;
+    setValidClass?: boolean;
 
     name: string;
     value?: string;
@@ -36,10 +39,10 @@ export interface IAttrMatTextArea {
 export class MatTextArea extends st.component<IAttrMatTextArea> implements ILifecycle {
 
     @attr
-    label: string | IVirtualNode = '';
+    label: string = '';
 
     @attr
-    helperText: string | IVirtualNode = '';
+    helperText: string = '';
 
     @attr
     characterCounter: boolean = false;
@@ -48,7 +51,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     validators: Array<(value: string) => Promise<boolean>> = [];
 
     @attr
-    validationErrorMessages: { [error: string]: string | IVirtualNode } = {};
+    validationErrorMessages: { [error: string]: string } = {};
 
     @attr
     validationSuccessMessage: string = '';
@@ -57,6 +60,9 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
      */
     @attr
     formIgnore: boolean = false;
+
+    @attr
+    setValidClass: boolean = matGetConfig().setValidClass;
 
     /**
      * text-area specific stuff
@@ -119,7 +125,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     }
 
     render() {
-        const internalValidators = this.validators;
+        const internalValidators = [];
 
         if (typeof this.required !== TYPE_UNDEFINED) {
             internalValidators.push(required)
@@ -131,24 +137,15 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
             internalValidators.push(minLength(this.minLength))
         }
 
+        let  label;
 
-        let spanHelperTextAndCounter, label;
-        if (this.helperText || this.validationSuccessMessage || this.characterCounter) {
-            spanHelperTextAndCounter = <div class="mat-input-helper-counter">
-                <span ref={{helperSpanRef: this}} class="helper-text"
-                      data-success={this.validationSuccessMessage} style="flex: 1">{this.helperText}
-            </span>
-                <span ref={{counterRef: this}}
-                      class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>{this.getCharacterCountText(this.value)}</span>
-            </div>
-        }
         if (this.label) {
             label = <label ref={{labelRef: this}}
                            class={[this.value || this.placeholder ? 'active' : '']}
                            for={this.textAreaId}>{this.label}</label>
         }
-        return <Validation validators={internalValidators}>
-            <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
+        return <Validation validators={mergeArrays(internalValidators, this.validators)} onValidation={(evt) => this.onAfterValidate(evt)}>
+            <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}} >
                 {this.renderChildren()}
                 <textarea ref={{textAreaRef: this}} class={['materialize-textarea']}
                           style={{height: `${this.getHeight(this.value)}px`}}
@@ -175,7 +172,16 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                           onBlur={() => this.onInputBlur()}>
                     {this.value}
                 </textarea>
-                {label}{spanHelperTextAndCounter}
+                {label}
+                <div ref={{helperTextRef: this}} class="mat-input-helper-counter helper-text" data-success={this.validationSuccessMessage}>
+                <span class="helper-text"
+                      style="flex: 1">{this.helperText}
+                </span>
+                    <span ref={{counterRef: this}}
+                          class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>
+                        {this.getCharacterCountText(this.value)}
+                    </span>
+                </div>
 
             </div>
         </Validation>
@@ -184,7 +190,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     onAfterRender(): void {
         super.onAfterRender();
         if (this.formIgnore) {
-            this.textAreaRef.setAttribute('form-ignore', '');
+            (this.textAreaRef as any)[FORM_IGNORE_PROPERTY_NAME] = true;
         }
     }
 
@@ -221,8 +227,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
             const lines = value.split(/\r*\n/).length;
             return ((lines - 1) * 21) + 45;
         }
-
-        return 54
+        return 45
     }
 
     getDefaultHeight() {
@@ -262,4 +267,30 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
             materialIcon.classList.remove('active')
         }
     };
+
+    onAfterValidate = (evt: IEvent<ValidationEventDetail>) => {
+        if (!this.readonly && !this.disabled) {
+            const details = evt.detail as ValidationEventDetail;
+            this.helperTextRef.removeAttribute("data-error");
+            this.textAreaRef.classList.remove('valid', 'invalid');
+            if (!details.valid) {
+                this.textAreaRef.classList.add('invalid');
+                const error = this.getError(details.errors);
+                if (error) {
+                    this.helperTextRef.setAttribute("data-error", error);
+                }
+            } else if(this.setValidClass) {
+                this.textAreaRef.classList.add('valid');
+            }
+        }
+    };
+
+    getError(errors: Array<string>) {
+        for (const error of errors) {
+            const message = this.validationErrorMessages[error];
+            if (message) {
+                return message;
+            }
+        }
+    }
 }
