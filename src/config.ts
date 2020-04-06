@@ -7,7 +7,7 @@ export interface MatConfig {
 }
 
 export const matDefaultConfig: MatConfig = {
-    setValidClass: true,
+    setValidClass: false,
     validationDebounceTimeInMs: 250,
     validationEventListener: ['change', 'keyup']};
 
