@@ -122,6 +122,9 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     @ref
     counterRef!: HTMLSpanElement;
 
+    @ref
+    validationRef!: Validation;
+
     textAreaId: string;
 
 
@@ -150,7 +153,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                            class={[this.value || this.placeholder ? 'active' : '']}
                            for={this.textAreaId}>{this.label}</label>
         }
-        return <Validation validators={mergeArrays(internalValidators, this.validators)}
+        return <Validation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
                            onValidation={(evt) => this.onAfterValidate(evt)}
                            debounceTimeInMs={this.debounceTimeInMs}
                            eventListeners={this.eventListeners}>
@@ -304,5 +307,9 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
 
     getValue() {
         this.textAreaRef.value;
+    }
+
+    async validate(force: boolean){
+        return await this.validationRef.validate(force);
     }
 }

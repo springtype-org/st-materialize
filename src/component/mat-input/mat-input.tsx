@@ -129,6 +129,9 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     @ref
     counterRef!: HTMLSpanElement;
 
+    @ref
+    validationRef!: Validation;
+
     inputId: string;
 
     constructor() {
@@ -164,7 +167,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                            class={[this.value || this.placeholder || this.type === 'date' ? 'active' : '']}
                            for={this.inputId}>{this.label}</label>
         }
-        return <Validation validators={mergeArrays(internalValidators, this.validators)}
+        return <Validation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
                            eventListeners={this.eventListeners} debounceTimeInMs={this.debounceTimeInMs}
                            onValidation={(evt) => this.onAfterValidate(evt)}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
@@ -320,5 +323,9 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
 
     getValueAsDate() {
         this.inputRef.valueAsDate;
+    }
+
+    async validate(force: boolean){
+        return await this.validationRef.validate(force);
     }
 }
