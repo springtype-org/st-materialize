@@ -4,10 +4,10 @@ import {IEventListener} from "springtype/web/component/interface";
 import {matGetConfig} from "../../config";
 
 export interface IAttrValidation {
+    debounceTimeInMs?: number;
     eventListeners?: Array<string>;
     validators?: Array<(value: any) => Promise<boolean>>;
     onValidation?: IEventListener<ValidationEventDetail>;
-
 }
 
 export interface IValidationState {

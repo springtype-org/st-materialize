@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-springtype@^2.0.0-beta.65:
-  version "2.0.0-beta.65"
-  resolved "https://registry.yarnpkg.com/springtype/-/springtype-2.0.0-beta.65.tgz#b2862e83149d64a638f07b1e72bb03dfc348fef8"
-  integrity sha512-A0B361rxB49e6fGiiWow1E+oXMGIlfYo2J7qP+n+RlL67k3zfkzmXTFTLLYLeoiC80u3Hx7nRZ+bt9eJDZMZ+A==
+springtype@^2.0.0-beta.66:
+  version "2.0.0-beta.66"
+  resolved "https://registry.yarnpkg.com/springtype/-/springtype-2.0.0-beta.66.tgz#b8c0ea04e6972cb2b92579d607fc0d41a3e0eda0"
+  integrity sha512-v2U4VgOogR78jCD4DJjpGzEZuDjZHZaB4ZIhImZWY3jCyI8Tun8fwvW5N6/KYRsn2sNhM0TDRiFTZVIZjtQXJw==
 
 typescript@^3.7.4:
   version "3.8.3"

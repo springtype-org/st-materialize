@@ -1,5 +1,5 @@
 import {st} from "springtype/core";
-import {IEvent, ILifecycle} from "springtype/web/component/interface";
+import {IEvent, IEventListener, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
@@ -18,6 +18,9 @@ export interface IMatCheckboxAttrs {
 
     filled?: boolean;
 
+    debounceTimeInMs?: number;
+    eventListeners?: Array<string>;
+    onValidation?: IEventListener<ValidationEventDetail>;
 }
 
 @component({tag: 'label'})
@@ -48,6 +51,13 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
     @attr
     filled: boolean = false;
 
+    @attr
+    eventListeners!: Array<string>;
+
+    @attr
+    debounceTimeInMs!: number;
+
+
     @ref
     inputRef!: HTMLInputElement;
 
@@ -57,11 +67,12 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
         if (this.required) {
             validators.push(required);
         }
-        return <Validation validators={validators} onValidation={(evt) => this.onAfterValidate(evt)}>
+        return <Validation validators={validators} onValidation={(evt) => this.onAfterValidate(evt)}
+                           debounceTimeInMs={this.debounceTimeInMs} eventListeners={this.eventListeners}>
             <input ref={{inputRef: this}} name={this.name} type="checkbox"
                    disabled={this.disabled} checked={this.checked}
                    class={[this.filled ? 'filled-in' : '']}/>
-            <span >{this.label}</span>
+            <span>{this.label}</span>
         </Validation>
     }
 
@@ -78,9 +89,13 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
             this.inputRef.classList.remove('valid', 'invalid');
             if (!detail.valid) {
                 this.inputRef.classList.add('invalid');
-            } else  if(this.setValidClass) {
+            } else if (this.setValidClass) {
                 this.inputRef.classList.add('valid');
             }
         }
+    }
+
+    getChecked() {
+        this.inputRef.checked;
     }
 }

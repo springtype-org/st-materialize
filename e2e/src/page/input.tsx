@@ -19,7 +19,7 @@ export class InputPage extends st.component {
                         <h4>MatInput</h4>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatInput name="formIgnore" label={'Test me I am a text'} formIgnore={true} minLength={8}
+                        <MatInput onValidation={(evt)=> console.log('onValidation', evt)} name="formIgnore" label={'Test me I am a text'} formIgnore={true} minLength={8}
                                   validators={[required]} helperText={"sdfsdfsd"}
                                   validationErrorMessages={{
                                       'required': 'hey please set me',

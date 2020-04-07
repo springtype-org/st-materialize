@@ -4,19 +4,19 @@ import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function/get-unique-html-id";
-import {Validation, ValidationEventDetail} from "../form";
+import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, Validation, ValidationEventDetail} from "../form";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, pattern, required} from "springtype/core/validate";
 import {min} from "../validate/min";
 import {max} from "../validate/max";
-import {FORM_IGNORE_PROPERTY_NAME} from "../form";
 import {matGetConfig} from "../../config";
 
-export interface IAttrMatTextInput {
+export interface IAttrMatTextInput  extends IAttrValidation{
     label?: string;
     helperText?: string;
     characterCounter?: boolean;
     validators?: Array<(value: string | number | Date) => Promise<boolean>>;
+
     validationErrorMessages?: { [error: string]: string };
     validationSuccessMessage?: string;
     formIgnore?: boolean;
@@ -48,9 +48,6 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
 
     @attr
     characterCounter: boolean = false;
-
-    @attr
-    validators: Array<(value: string | number | Date) => Promise<boolean>> = [];
 
     @attr
     validationErrorMessages: { [error: string]: string } = {};
@@ -110,6 +107,16 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     @attr
     hidden!: boolean;
 
+    //validation properties
+    @attr
+    eventListeners!: Array<string>;
+
+    @attr
+    debounceTimeInMs!: number;
+
+    @attr
+    validators: Array<(value: any) => Promise<boolean>> = [];
+
     @ref
     inputRef!: HTMLInputElement;
 
@@ -158,6 +165,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                            for={this.inputId}>{this.label}</label>
         }
         return <Validation validators={mergeArrays(internalValidators, this.validators)}
+                           eventListeners={this.eventListeners} debounceTimeInMs={this.debounceTimeInMs}
                            onValidation={(evt) => this.onAfterValidate(evt)}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
@@ -185,7 +193,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                 {label}
                 <div ref={{helperTextRef: this}} class="helper-text mat-input-helper-counter"
                      data-success={this.validationSuccessMessage}>
-                <span style={{flex:1}}>{this.helperText}</span>
+                    <span style={{flex: 1}}>{this.helperText}</span>
                     <span ref={{counterRef: this}}
                           class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>
                         {this.getCharacterCountText(this.value)}
@@ -296,5 +304,21 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                 return message;
             }
         }
+    }
+
+    getValue() {
+        this.inputRef.value;
+    }
+
+    getChecked() {
+        this.inputRef.checked;
+    }
+
+    getValueAsNumber() {
+        this.inputRef.valueAsNumber;
+    }
+
+    getValueAsDate() {
+        this.inputRef.valueAsDate;
     }
 }
