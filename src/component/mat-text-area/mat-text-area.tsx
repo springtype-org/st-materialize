@@ -306,10 +306,10 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     }
 
     getValue() {
-        this.textAreaRef.value;
+        return this.textAreaRef.value;
     }
 
-    async validate(force: boolean){
+    async validate(force: boolean) {
         return await this.validationRef.validate(force);
     }
 }

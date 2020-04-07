@@ -59,7 +59,8 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
 
 
     @ref
-    inputRef!: HTMLInputElement;@ref
+    inputRef!: HTMLInputElement;
+    @ref
 
     @ref
     validationRef!: Validation;
@@ -70,7 +71,8 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
         if (this.required) {
             validators.push(required);
         }
-        return <Validation ref={{validationRef: this}} validators={validators} onValidation={(evt) => this.onAfterValidate(evt)}
+        return <Validation ref={{validationRef: this}} validators={validators}
+                           onValidation={(evt) => this.onAfterValidate(evt)}
                            debounceTimeInMs={this.debounceTimeInMs} eventListeners={this.eventListeners}>
             <input ref={{inputRef: this}} name={this.name} type="checkbox"
                    disabled={this.disabled} checked={this.checked}
@@ -99,10 +101,10 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
     }
 
     getChecked() {
-        this.inputRef.checked;
+        return this.inputRef.checked;
     }
 
-    async validate(force: boolean){
-      return await this.validationRef.validate(force);
+    async validate(force: boolean) {
+        return await this.validationRef.validate(force);
     }
 }

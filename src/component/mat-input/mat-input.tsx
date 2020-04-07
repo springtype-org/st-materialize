@@ -11,7 +11,7 @@ import {min} from "../validate/min";
 import {max} from "../validate/max";
 import {matGetConfig} from "../../config";
 
-export interface IAttrMatTextInput  extends IAttrValidation{
+export interface IAttrMatTextInput extends IAttrValidation {
     label?: string;
     helperText?: string;
     characterCounter?: boolean;
@@ -310,22 +310,22 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     }
 
     getValue() {
-        this.inputRef.value;
+        return this.inputRef.value;
     }
 
     getChecked() {
-        this.inputRef.checked;
+        return this.inputRef.checked;
     }
 
     getValueAsNumber() {
-        this.inputRef.valueAsNumber;
+        return this.inputRef.valueAsNumber;
     }
 
     getValueAsDate() {
-        this.inputRef.valueAsDate;
+        return this.inputRef.valueAsDate;
     }
 
-    async validate(force: boolean){
+    async validate(force: boolean) {
         return await this.validationRef.validate(force);
     }
 }
