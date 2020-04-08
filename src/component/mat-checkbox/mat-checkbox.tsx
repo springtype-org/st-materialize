@@ -59,7 +59,6 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
 
     @ref
     inputRef!: HTMLInputElement;
-    @ref
 
     @ref
     validationRef!: MatValidation;
@@ -103,6 +102,9 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
         return this.inputRef.checked;
     }
 
+    setChecked(checked: boolean) {
+        return this.inputRef.checked = checked;
+    }
     async validate(force: boolean = false) {
         return await this.validationRef.validate(force);
     }

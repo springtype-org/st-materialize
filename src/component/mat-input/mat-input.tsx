@@ -10,7 +10,6 @@ import {maxLength, minLength, pattern, required} from "springtype/core/validate"
 import {min} from "../validate/min";
 import {max} from "../validate/max";
 import {matGetConfig} from "../../config";
-import {AttrType} from "springtype/web/component/trait/attr";
 
 export interface IAttrMatTextInput extends IAttrValidation {
     label?: string;
@@ -71,8 +70,8 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     @attr
     name!: string;
 
-    @attr(AttrType.DOM_INTRANSPARENT, '_value')
-    _value!: string;
+    @attr
+    value!: string;
 
     @attr
     type: 'text' | 'email' | 'number' | 'password' | 'date' = 'text';
@@ -165,7 +164,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
         let label;
         if (this.label) {
             label = <label ref={{labelRef: this}}
-                           class={[this._value || this.placeholder || this.type === 'date' ? 'active' : '']}
+                           class={[this.value || this.placeholder || this.type === 'date' ? 'active' : '']}
                            for={this.inputId}>{this.label}</label>
         }
         return <MatValidation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
@@ -177,7 +176,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                     id: this.inputId,
                     name: this.name,
                     type: this.type,
-                    value: this._value,
+                    value: this.value,
                     step: this.step,
                     placeholder: this.placeholder,
                     disabled: this.disabled,
@@ -199,8 +198,8 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                      data-success={this.validationSuccessMessage}>
                     <span style={{flex: 1}}>{this.helperText}</span>
                     <span ref={{counterRef: this}}
-                          class={["character-counter", this._value && this.characterCounter ? '' : 'hide']}>
-                        {this.getCharacterCountText(this._value)}
+                          class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>
+                        {this.getCharacterCountText(this.value)}
                     </span>
                 </div>
             </div>
@@ -310,38 +309,38 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
         }
     }
 
-    get value() {
+    getValue() {
         return this.inputRef.value;
     }
 
-    get checked() {
+    getChecked() {
         return this.inputRef.checked;
     }
 
-    get valueAsNumber() {
+    getValueAsNumber() {
         return this.inputRef.valueAsNumber;
     }
 
-    get valueAsDate() {
+    getValueAsDate() {
         return this.inputRef.valueAsDate;
     }
 
-    set value(value: string) {
+    setValue(value: string) {
         this.inputRef.value = value;
         this.onAfterManualChange();
     }
 
-    set checked(checked: boolean) {
+    setChecked(checked: boolean) {
         this.inputRef.checked = checked;
         this.onAfterManualChange();
     }
 
-    set valueAsNumber(number: number) {
+    setValueAsNumber(number: number) {
         this.inputRef.valueAsNumber = number;
         this.onAfterManualChange();
     }
 
-    set valueAsDate(date: Date | null) {
+    setValueAsDate(date: Date) {
         this.inputRef.valueAsDate = date;
         this.onAfterManualChange();
     }
