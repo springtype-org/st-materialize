@@ -9,6 +9,7 @@ import {IVirtualNode} from "springtype/web/vdom/interface";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, required} from "springtype/core/validate";
 import {matGetConfig} from "../../config";
+import {AttrType} from "springtype/web/component/trait/attr";
 
 export interface IAttrMatTextArea extends IAttrValidation {
     label: string | IVirtualNode;
@@ -66,8 +67,8 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     @attr
     name!: string;
 
-    @attr
-    value!: string;
+    @attr(AttrType.DOM_INTRANSPARENT, 'value')
+    _value!: string;
 
     @attr
     spellcheck!: boolean;
@@ -305,8 +306,19 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
         }
     }
 
-    getValue() {
+    get value() {
         return this.textAreaRef.value;
+    }
+
+    set value(value: string) {
+        this.textAreaRef.value = value;
+        this.onAfterManualChange();
+    }
+
+    onAfterManualChange() {
+        if (!!this.textAreaRef.value) {
+            this.onInputFocus();
+        }
     }
 
     async validate(force: boolean = false) {

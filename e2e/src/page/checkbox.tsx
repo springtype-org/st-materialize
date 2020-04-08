@@ -51,7 +51,7 @@ export class CheckboxPage extends st.component {
     }
 
     async submitForm() {
-        const formValidationResult = await this.formRef.validate<any>(true);
+        const formValidationResult = await this.formRef.validate(true);
         console.log('formValidationResult', formValidationResult, this.formRef.getState());
     }
 

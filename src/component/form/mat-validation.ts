@@ -98,7 +98,7 @@ export class MatValidation extends st.component<IAttrValidation> {
         }
 
         try {
-            const response = await new Promise<boolean>((resolve, reject) => {
+            return await new Promise<boolean>((resolve, reject) => {
                     this.validationReject = reject;
                     clearTimeout(this.timeout);
                     this.timeout = setTimeout(async () => {
@@ -111,14 +111,13 @@ export class MatValidation extends st.component<IAttrValidation> {
 
                                 if (this.target.type === 'radio') {
                                     //TODO: validate radio buttons
-                                    /* const validationState = await this.doRadioValidation(value);
+                                    /* const validationState = await this.doRadioValidation(_value);
                                      valid = validationState.valid;
                                      this.state = Object.freeze(validationState);*/
                                 } else {
                                     const errors: Array<string> = [];
                                     for (const validator of this.validators) {
                                         if (!await validator(value)) {
-                                            console.log(this.el);
                                             valid = false;
                                             errors.push((validator as any)['VALIDATOR_NAME']);
                                         }
@@ -135,17 +134,12 @@ export class MatValidation extends st.component<IAttrValidation> {
                     )
                 }
             );
-            if (!response) {
-                console.log('response', this.el, response);
-
-            }
-            return response
         } catch (e) {
             return false;
         }
     }
 
-    /* async doRadioValidation(value: string): Promise<IValidationState> {
+    /* async doRadioValidation(_value: string): Promise<IValidationState> {
          let valid = true;
          const errors: Array<string> = [];
          let parent = (this.el as HTMLInputElement).form;
@@ -159,7 +153,7 @@ export class MatValidation extends st.component<IAttrValidation> {
                          const validators = radioInput.$stComponent.validators;
                          if (validators.length > 0) {
                              for (const validator of validators) {
-                                 if (!await validator(value)) {
+                                 if (!await validator(_value)) {
                                      valid = false;
                                      errors.push((validator as any)['VALIDATOR_NAME']);
                                  }
@@ -172,13 +166,13 @@ export class MatValidation extends st.component<IAttrValidation> {
                      const radioInput = radioList.item(i);
                      if (radioList && (radioInput as any).$stComponent) {
                          const component = (radioInput as any).$stComponent as Input;
-                         component.validationState = ({valid, errors, value});
+                         component.validationState = ({valid, errors, _value});
                          component.updateValidation();
                      }
                  }
              }
          }
-         return {validated: true, valid, errors, value}
+         return {validated: true, valid, errors, _value}
      }*/
 
     onTargetEvent = (eventListener: string) => (evt: Event) => {

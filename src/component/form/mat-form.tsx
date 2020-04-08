@@ -19,7 +19,7 @@ export const FORM_PROPERTY_NAME = "MAT_FROM";
 export const FORM_IGNORE_PROPERTY_NAME = "MAT_FORM_IGNORE";
 
 @component
-export class MatForm  extends st.component<IAttrForm> {
+export class MatForm extends st.component<IAttrForm> {
 
     @attr
     name: string = "form";
@@ -51,33 +51,31 @@ export class MatForm  extends st.component<IAttrForm> {
     }
 
     onAfterRender(): void {
-        this.addForm();
+        this.addMatFormToForm();
         this.overrideSubmit();
     }
 
-    addForm() {
+    addMatFormToForm() {
         (this.formRef as any)[FORM_PROPERTY_NAME] = this;
     }
 
     overrideSubmit() {
         //ignore on submit validate forms async
-        this.formRef.onsubmit = () => false;
-        this.el.addEventListener('submit', async () => {
-            if (await this.validate()) {
-                this.formRef.submit();
-            }
+        this.formRef.addEventListener('submit', (evt) => {
+            evt.preventDefault();
+
         })
     }
 
     async validate(force: boolean = false): Promise<boolean> {
         return new Promise(async (resolve) => {
             let result = true;
-            const elementPromises =  await this.getElements().map(element =>  element.validate(force));
+            const elementPromises = await this.getElements().map(element => element.validate(force));
             if (elementPromises.filter(v => !v).length > 0) {
                 this.formRef.checkValidity();
                 result = false;
             }
-            const subFormPromises =  await this.getSubForm().map(element =>  element.validate(force));
+            const subFormPromises = await this.getSubForm().map(element => element.validate(force));
             if (subFormPromises.filter(v => !v).length > 0) {
                 result = false;
             }
@@ -150,7 +148,6 @@ export class MatForm  extends st.component<IAttrForm> {
                 st.error('Using an nested form, please use <MatForm name="formName">', form);
             }
         }
-        console.log('subfroms', forms)
         return forms;
     }
 

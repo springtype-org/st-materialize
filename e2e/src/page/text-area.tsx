@@ -4,7 +4,7 @@ import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
 import {Container} from "../cmp/container";
 import {MatForm} from "../../../src/component/form";
-import {MatTextArea} from "../../../src/component";
+import {MatIcon, MatTextArea} from "../../../src/component";
 
 @component
 export class TextAreaPage extends st.component {
@@ -26,26 +26,26 @@ export class TextAreaPage extends st.component {
                         <MatTextArea name="placeholder" label={'Placeholder here'} placeholder={'Placeholder here'}/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatTextArea name="withLabel" label={'With value'} value={'With value'}/>
+                        <MatTextArea name="withLabel" label={'With _value'} value={'With _value'}/>
                     </div>
                     <div class={['col', 's12']}>
                         <MatTextArea name="withoutLabel" value={'Without label'}/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatTextArea name="ValueAndDisabled" label={'With value and disabled'}
-                                     value={'With value and disabled'}
+                        <MatTextArea name="ValueAndDisabled" label={'With _value and disabled'}
+                                     value={'With _value and disabled'}
                                      disabled={true}/>
                     </div>
                     <div class={['col', 's12']}>
                         <MatTextArea name="WithValueAndDisabledAndHelperText"
-                                     label={'With value, disabled and helperText'}
-                                     value={'With value, disabled and helperText'}
-                                     disabled={true} helperText={'With value, disabled and helperText'}/>
+                                     label={'With _value, disabled and helperText'}
+                                     value={'With _value, disabled and helperText'}
+                                     disabled={true} helperText={'With _value, disabled and helperText'}/>
                     </div>
                     <div class={['col', 's12']}>
                         <MatTextArea name="hiddenInput"
                                      label={'I am hidden'}
-                                     value={'You can not see this value'}
+                                     value={'You can not see this _value'}
                                      hidden={true}/>
                     </div>
                     <div class={['col', 's12']}>
@@ -70,12 +70,12 @@ export class TextAreaPage extends st.component {
                         <MatTextArea name="withCharacterCounter" label={'Character counter'} characterCounter={true}/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatTextArea name="characterCounterAndValue" label={'Character counter with value '}
+                        <MatTextArea name="characterCounterAndValue" label={'Character counter with _value '}
                                      characterCounter={true} value={'1234'}/>
                     </div>
                     <div class={['col', 's12']}>
                         <MatTextArea name="characterCounterAndValueAndMaxlength120"
-                                     label={'Character counter with value and maxlength'} characterCounter={true}
+                                     label={'Character counter with _value and maxlength'} characterCounter={true}
                                      value={'yeah!!!'} maxLength={120}/>
                     </div>
                     <div class={['col', 's12']}>
@@ -105,7 +105,7 @@ fdsfdfsd"/>
     }
 
     async submitForm() {
-        const formValidationResult = await this.formRef.validate<any>(true);
+        const formValidationResult = await this.formRef.validate(true);
         console.log('formValidationResult', formValidationResult, this.formRef.getState());
     }
 

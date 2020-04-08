@@ -12,6 +12,12 @@ export class InputPage extends st.component {
     @ref
     formRef!: MatForm;
 
+    @ref
+    inputTextRef!: MatInput;
+
+    @ref
+    inputDateRef!: MatInput;
+
     render() {
         return <div class={'container'}>
             <MatForm ref={{formRef: this}}>
@@ -96,15 +102,18 @@ export class InputPage extends st.component {
                                   value={'yeah!!!'} maxLength={120}/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatInput name="withRequiredValidator" validators={[required]} label={'Address'}
+                        <MatInput ref={{inputTextRef: this}} name="withRequiredValidator" validators={[required]} label={'Address'}
                                   characterCounter={true}
                                   validationErrorMessages={{'required': 'you forgot me'}}
                                   helperText={'required *'}
                                   value={'Schnaupping 16'} maxLength={20}/>
                     </div>
                     <div class={['col', 's12']}>
+                        <MatInput ref={{inputDateRef: this}} name="dateRange" label={'Range between dates'} type="date" />
+                    </div>
+                    <div class={['col', 's12']}>
                         <Container tag={"center"}>
-                            <button class="btn" onClick={() => this.submitForm()}>Validate</button>
+                            <button  class="btn" onClick={() => this.submitForm()}>Validate</button>
                         </Container>
                     </div>
                 </div>
@@ -113,7 +122,9 @@ export class InputPage extends st.component {
     }
 
     async submitForm() {
-        const formValidationResult = await this.formRef.validate<any>(true);
+        const formValidationResult = await this.formRef.validate();
         console.log('formValidationResult', formValidationResult, this.formRef.getState());
+        this.inputTextRef.value ="Yeah i am an input";
+        this.inputDateRef.valueAsDate =new Date();
     }
 }
