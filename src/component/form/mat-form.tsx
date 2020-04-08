@@ -3,12 +3,12 @@ import {st} from "springtype/core";
 import {IEventListener} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
-import {Validation, VALIDATION_PROPERTY_NAME} from "./validation";
+import {MatValidation, VALIDATION_PROPERTY_NAME} from "./mat-validation";
 import {htmlCollectionToArray} from "springtype/core/lang";
 
-export interface FromValidationDetail<TYPE> {
+export interface FromValidationDetail {
     valid: boolean,
-    state: TYPE
+    state: any
 }
 
 export interface IAttrForm {
@@ -19,7 +19,7 @@ export const FORM_PROPERTY_NAME = "MAT_FROM";
 export const FORM_IGNORE_PROPERTY_NAME = "MAT_FORM_IGNORE";
 
 @component
-export class Form extends st.component<IAttrForm> {
+export class MatForm  extends st.component<IAttrForm> {
 
     @attr
     name: string = "form";
@@ -30,8 +30,8 @@ export class Form extends st.component<IAttrForm> {
     @event
     onFormValidation!: IEventListener<Event>;
 
-    dispatchFormValidation = (detail: FromValidationDetail<any>) => {
-        this.dispatchEvent<FromValidationDetail<any>>("formValidation", {
+    dispatchFormValidation = (detail: FromValidationDetail) => {
+        this.dispatchEvent<FromValidationDetail>("formValidation", {
             bubbles: true,
             cancelable: true,
             composed: true,
@@ -51,7 +51,7 @@ export class Form extends st.component<IAttrForm> {
     }
 
     onAfterRender(): void {
-        this.addForm()
+        this.addForm();
         this.overrideSubmit();
     }
 
@@ -69,39 +69,32 @@ export class Form extends st.component<IAttrForm> {
         })
     }
 
-    async validate<STATE_TYPE>(force: boolean = false): Promise<boolean> {
+    async validate(force: boolean = false): Promise<boolean> {
         return new Promise(async (resolve) => {
             let result = true;
-            const elementResults: Array<Promise<boolean>> = [];
-            for (const element of this.getElements()) {
-                elementResults.push(element.validate(force));
-            }
-            const formResults: Array<Promise<boolean>> = [];
-
-            for (const subForm of this.getSubForm()) {
-                formResults.push(subForm.validate(force))
-            }
-            if ((await Promise.all(elementResults)).filter(v => !v).length > 0) {
-                (this.el as HTMLFormElement).checkValidity();
+            const elementPromises =  await this.getElements().map(element =>  element.validate(force));
+            if (elementPromises.filter(v => !v).length > 0) {
+                this.formRef.checkValidity();
                 result = false;
             }
-            if ((await Promise.all(formResults)).filter(v => !v).length > 0) {
+            const subFormPromises =  await this.getSubForm().map(element =>  element.validate(force));
+            if (subFormPromises.filter(v => !v).length > 0) {
                 result = false;
             }
-            const validateResult: FromValidationDetail<STATE_TYPE> = {
+            const validateResult: FromValidationDetail = {
                 valid: result,
-                state: this.getState() as STATE_TYPE
+                state: this.getState()
             };
             this.dispatchFormValidation(validateResult);
             resolve(result);
         });
     }
 
-    getElements(): Array<Validation> {
-        const validationComponents: Array<Validation> = [];
+    getElements(): Array<MatValidation> {
+        const validationComponents: Array<MatValidation> = [];
         for (const element of htmlCollectionToArray<any>((this.formRef.elements))) {
-            if (element[VALIDATION_PROPERTY_NAME] && element[VALIDATION_PROPERTY_NAME] instanceof Validation) {
-                const validationComponent = element[VALIDATION_PROPERTY_NAME] as Validation;
+            if (element[VALIDATION_PROPERTY_NAME] && element[VALIDATION_PROPERTY_NAME] instanceof MatValidation) {
+                const validationComponent = element[VALIDATION_PROPERTY_NAME] as MatValidation;
                 if (!element.disabled && !element.readonly) {
                     validationComponents.push(validationComponent);
                 }
@@ -145,18 +138,19 @@ export class Form extends st.component<IAttrForm> {
         return formState as TYPE;
     }
 
-    getSubForm(): Array<Form> {
-        const forms: Array<Form> = [];
-        for (const form of htmlCollectionToArray<any>(this.el.querySelectorAll('form'))) {
-            if (form[FORM_PROPERTY_NAME] && form[FORM_PROPERTY_NAME] instanceof Form) {
-                const nestedForm = form[FORM_PROPERTY_NAME] as Form;
+    getSubForm(): Array<MatForm> {
+        const forms: Array<MatForm> = [];
+        for (const form of htmlCollectionToArray<any>(this.formRef.querySelectorAll('form'))) {
+            if (form[FORM_PROPERTY_NAME] && form[FORM_PROPERTY_NAME] instanceof MatForm) {
+                const nestedForm = form[FORM_PROPERTY_NAME] as MatForm;
                 if (nestedForm.parent === this) {
                     forms.push(nestedForm);
                 }
             } else {
-                st.error('Using an nested form, please use <Form name="formName">', form);
+                st.error('Using an nested form, please use <MatForm name="formName">', form);
             }
         }
+        console.log('subfroms', forms)
         return forms;
     }
 

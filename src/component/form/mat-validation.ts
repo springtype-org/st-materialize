@@ -23,7 +23,7 @@ export interface ValidationEventDetail extends IValidationState {
 export const VALIDATION_PROPERTY_NAME = "MAT_VALIDATION";
 
 @component
-export class Validation extends st.component<IAttrValidation> {
+export class MatValidation extends st.component<IAttrValidation> {
 
     @attr
     eventListeners: Array<string> = matGetConfig().validationEventListener;
@@ -86,7 +86,7 @@ export class Validation extends st.component<IAttrValidation> {
         }
         if (!this.target) {
             st.error('Validator, missing textarea or input child')
-        }else{
+        } else {
             (this.target as any)[VALIDATION_PROPERTY_NAME] = this;
         }
     }
@@ -98,7 +98,7 @@ export class Validation extends st.component<IAttrValidation> {
         }
 
         try {
-            return await new Promise<boolean>((resolve, reject) => {
+            const response = await new Promise<boolean>((resolve, reject) => {
                     this.validationReject = reject;
                     clearTimeout(this.timeout);
                     this.timeout = setTimeout(async () => {
@@ -118,6 +118,7 @@ export class Validation extends st.component<IAttrValidation> {
                                     const errors: Array<string> = [];
                                     for (const validator of this.validators) {
                                         if (!await validator(value)) {
+                                            console.log(this.el);
                                             valid = false;
                                             errors.push((validator as any)['VALIDATOR_NAME']);
                                         }
@@ -134,6 +135,11 @@ export class Validation extends st.component<IAttrValidation> {
                     )
                 }
             );
+            if (!response) {
+                console.log('response', this.el, response);
+
+            }
+            return response
         } catch (e) {
             return false;
         }

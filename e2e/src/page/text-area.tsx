@@ -1,19 +1,19 @@
 import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
-import {Form, MatIcon, MatTextArea} from "../../../dist";
-import {required} from "springtype/core/validate";
 import {ref} from "springtype/core/ref";
 import {Container} from "../cmp/container";
+import {MatForm} from "../../../src/component/form";
+import {MatTextArea} from "../../../src/component";
 
 @component
 export class TextAreaPage extends st.component {
     @ref
-    formRef!: Form;
+    formRef!: MatForm;
 
     render() {
         return <div class={'container'}>
-            <Form ref={{formRef: this}}>
+            <MatForm ref={{formRef: this}}>
                 <div class={'row'}>
                     <div class={['col', 's12']}>
                         <h4>MatTextArea</h4>
@@ -100,7 +100,7 @@ fdsfdfsd"/>
                         </Container>
                     </div>
                 </div>
-            </Form>
+            </MatForm>
         </div>
     }
 

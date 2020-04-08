@@ -1,19 +1,20 @@
 import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
-import {Form, MatIcon, MatInput} from "../../../dist";
 import {required} from "springtype/core/validate";
 import {Container} from "../cmp/container";
 import {ref} from "springtype/core/ref";
+import {MatForm} from "../../../src/component/form";
+import {MatIcon, MatInput} from "../../../src/component";
 
 @component
 export class InputPage extends st.component {
     @ref
-    formRef!: Form;
+    formRef!: MatForm;
 
     render() {
         return <div class={'container'}>
-            <Form ref={{formRef: this}}>
+            <MatForm ref={{formRef: this}}>
                 <div class={'row'}>
                     <div class={['col', 's12']}>
                         <h4>MatInput</h4>
@@ -107,7 +108,7 @@ export class InputPage extends st.component {
                         </Container>
                     </div>
                 </div>
-            </Form>
+            </MatForm>
         </div>
     }
 

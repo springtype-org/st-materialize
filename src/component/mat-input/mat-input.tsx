@@ -4,7 +4,7 @@ import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function/get-unique-html-id";
-import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, Validation, ValidationEventDetail} from "../form";
+import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, pattern, required} from "springtype/core/validate";
 import {min} from "../validate/min";
@@ -130,7 +130,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     counterRef!: HTMLSpanElement;
 
     @ref
-    validationRef!: Validation;
+    validationRef!: MatValidation;
 
     inputId: string;
 
@@ -167,9 +167,9 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                            class={[this.value || this.placeholder || this.type === 'date' ? 'active' : '']}
                            for={this.inputId}>{this.label}</label>
         }
-        return <Validation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
-                           eventListeners={this.eventListeners} debounceTimeInMs={this.debounceTimeInMs}
-                           onValidation={(evt) => this.onAfterValidate(evt)}>
+        return <MatValidation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
+                              eventListeners={this.eventListeners} debounceTimeInMs={this.debounceTimeInMs}
+                              onValidation={(evt) => this.onAfterValidate(evt)}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
                 <input ref={{inputRef: this}} attrs={{
@@ -203,7 +203,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                     </span>
                 </div>
             </div>
-        </Validation>
+        </MatValidation>
     }
 
     onAfterRender(): void {
@@ -325,7 +325,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
         return this.inputRef.valueAsDate;
     }
 
-    async validate(force: boolean) {
+    async validate(force: boolean = false) {
         return await this.validationRef.validate(force);
     }
 }

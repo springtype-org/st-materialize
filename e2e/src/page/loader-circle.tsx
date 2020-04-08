@@ -1,8 +1,8 @@
 import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
-import {MatLoaderCircle} from "../../../dist";
 import {ref} from "springtype/core/ref";
+import {MatLoaderCircle} from "../../../src/component";
 
 @component
 export class LoaderCirclePage extends st.component {

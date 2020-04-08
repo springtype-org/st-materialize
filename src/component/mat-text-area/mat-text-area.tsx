@@ -4,7 +4,7 @@ import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function/get-unique-html-id";
-import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, Validation, ValidationEventDetail} from "../form";
+import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {IVirtualNode} from "springtype/web/vdom/interface";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, required} from "springtype/core/validate";
@@ -123,7 +123,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     counterRef!: HTMLSpanElement;
 
     @ref
-    validationRef!: Validation;
+    validationRef!: MatValidation;
 
     textAreaId: string;
 
@@ -153,10 +153,10 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                            class={[this.value || this.placeholder ? 'active' : '']}
                            for={this.textAreaId}>{this.label}</label>
         }
-        return <Validation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
-                           onValidation={(evt) => this.onAfterValidate(evt)}
-                           debounceTimeInMs={this.debounceTimeInMs}
-                           eventListeners={this.eventListeners}>
+        return <MatValidation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
+                              onValidation={(evt) => this.onAfterValidate(evt)}
+                              debounceTimeInMs={this.debounceTimeInMs}
+                              eventListeners={this.eventListeners}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
                 <textarea ref={{textAreaRef: this}} class={['materialize-textarea']}
@@ -195,7 +195,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                 </div>
 
             </div>
-        </Validation>
+        </MatValidation>
     }
 
     onAfterRender(): void {
@@ -309,7 +309,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
         return this.textAreaRef.value;
     }
 
-    async validate(force: boolean) {
+    async validate(force: boolean = false) {
         return await this.validationRef.validate(force);
     }
 }

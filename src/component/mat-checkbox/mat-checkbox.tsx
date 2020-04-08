@@ -4,8 +4,7 @@ import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {required} from "springtype/core/validate";
-import {Validation, ValidationEventDetail} from "../form/validation";
-import {FORM_IGNORE_PROPERTY_NAME} from "../form/form";
+import {FORM_IGNORE_PROPERTY_NAME, MatValidation, ValidationEventDetail} from "../form";
 import {matGetConfig} from "../../config";
 
 export interface IMatCheckboxAttrs {
@@ -63,7 +62,7 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
     @ref
 
     @ref
-    validationRef!: Validation;
+    validationRef!: MatValidation;
 
 
     render() {
@@ -71,14 +70,14 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
         if (this.required) {
             validators.push(required);
         }
-        return <Validation ref={{validationRef: this}} validators={validators}
-                           onValidation={(evt) => this.onAfterValidate(evt)}
-                           debounceTimeInMs={this.debounceTimeInMs} eventListeners={this.eventListeners}>
+        return <MatValidation ref={{validationRef: this}} validators={validators}
+                              onValidation={(evt) => this.onAfterValidate(evt)}
+                              debounceTimeInMs={this.debounceTimeInMs} eventListeners={this.eventListeners}>
             <input ref={{inputRef: this}} name={this.name} type="checkbox"
                    disabled={this.disabled} checked={this.checked}
                    class={[this.filled ? 'filled-in' : '']}/>
             <span>{this.label}</span>
-        </Validation>
+        </MatValidation>
     }
 
     onAfterRender(): void {
@@ -104,7 +103,7 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
         return this.inputRef.checked;
     }
 
-    async validate(force: boolean) {
+    async validate(force: boolean = false) {
         return await this.validationRef.validate(force);
     }
 }

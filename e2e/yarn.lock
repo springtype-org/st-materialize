@@ -7448,10 +7448,10 @@ split-string@^3.0.1, split-string@^3.0.2:
   dependencies:
     extend-shallow "^3.0.0"
 
-springtype@^2.0.0-beta.65:
-  version "2.0.0-beta.65"
-  resolved "https://registry.yarnpkg.com/springtype/-/springtype-2.0.0-beta.65.tgz#b2862e83149d64a638f07b1e72bb03dfc348fef8"
-  integrity sha512-A0B361rxB49e6fGiiWow1E+oXMGIlfYo2J7qP+n+RlL67k3zfkzmXTFTLLYLeoiC80u3Hx7nRZ+bt9eJDZMZ+A==
+springtype@^2.0.0-beta.67:
+  version "2.0.0-beta.68"
+  resolved "https://registry.yarnpkg.com/springtype/-/springtype-2.0.0-beta.68.tgz#de40bdfdf663fd54169b9d8eb0e3c8117da7ddbb"
+  integrity sha512-scHBlT+cXXkaY/+bOOOpPx9JYAGlrmimCk2Ten0nk36K7QleD5LVtT4CEEKPjlgSY0iGrI5ORdqedjyUt5RRmQ==
 
 sprintf-js@~1.0.2:
   version "1.0.3"

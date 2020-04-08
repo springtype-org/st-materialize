@@ -1,8 +1,8 @@
 import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
-import {MatModal} from "../../../dist";
 import {ref} from "springtype/core/ref";
+import {MatModal} from "../../../src/component";
 
 @component
 export class ModalPage extends st.component {
