@@ -1,5 +1,3 @@
-import "./mat-select.scss"
-
 import {attr, component} from "springtype/web/component";
 import {st} from "springtype/core";
 import {IEvent, ILifecycle} from "springtype/web/component/interface";
