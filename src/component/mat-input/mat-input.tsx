@@ -214,7 +214,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     }
 
     onInputFocus = () => {
-        if (this.disabled || this.readonly) {
+        if (!this.disabled && !this.readonly) {
             if (this.labelRef) {
                 this.labelRef.classList.add('active');
             }

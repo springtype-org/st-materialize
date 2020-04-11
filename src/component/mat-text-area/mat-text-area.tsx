@@ -205,19 +205,21 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     }
 
     onInputFocus = () => {
-        if (this.labelRef) {
-            this.labelRef.classList.add('active');
-        }
-        const matIcon = this.el.querySelector('.mat-icon');
-        if (matIcon) {
-            matIcon.classList.add('active')
-        }
-        const materialIcon = this.el.querySelector('.material-icons');
-        if (materialIcon) {
-            materialIcon.classList.add('active')
-        }
-        if (this.counterRef) {
-            this.counterRef.classList.remove('hide');
+        if (!this.disabled && !this.readonly) {
+            if (this.labelRef) {
+                this.labelRef.classList.add('active');
+            }
+            const matIcon = this.el.querySelector('.mat-icon');
+            if (matIcon) {
+                matIcon.classList.add('active')
+            }
+            const materialIcon = this.el.querySelector('.material-icons');
+            if (materialIcon) {
+                materialIcon.classList.add('active')
+            }
+            if (this.counterRef) {
+                this.counterRef.classList.remove('hide');
+            }
         }
     };
 
@@ -279,7 +281,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     };
 
     onAfterValidate = (evt: IEvent<ValidationEventDetail>) => {
-        if (!this.readonly && !this.disabled) {
+        if (!this.disabled && !this.readonly) {
             const details = evt.detail as ValidationEventDetail;
             this.helperTextRef.removeAttribute("data-error");
             this.textAreaRef.classList.remove('valid', 'invalid');

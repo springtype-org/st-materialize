@@ -1,11 +1,25 @@
 import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
-import {required} from "springtype/core/validate";
+import {
+    LOWERCASE,
+    lowercase,
+    MIN_LENGTH,
+    minLength,
+    NUMBER,
+    number,
+    REQUIRED,
+    required,
+    SPECIAL,
+    special,
+    UPPERCASE,
+    uppercase
+} from "springtype/core/validate";
 import {Container} from "../cmp/container";
 import {ref} from "springtype/core/ref";
 import {MatForm} from "../../../src/component/form";
 import {MatIcon, MatInput} from "../../../src/component";
+import {validatorNameFactory} from "springtype/core/validate/function/validator-name-factory";
 
 @component
 export class InputPage extends st.component {
@@ -14,6 +28,12 @@ export class InputPage extends st.component {
 
     @ref
     inputTextRef!: MatInput;
+
+    @ref
+    passwordInputRef!: MatInput;
+
+    @ref
+    passwordRepeatInputRef!: MatInput;
 
     @ref
     inputDateRef!: MatInput;
@@ -26,7 +46,8 @@ export class InputPage extends st.component {
                         <h4>MatInput</h4>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatInput onValidation={(evt)=> console.log('onValidation', evt)} name="formIgnore" label={'Test me I am a text'} formIgnore={true} minLength={8}
+                        <MatInput onValidation={(evt) => console.log('onValidation', evt)} name="formIgnore"
+                                  label={'Test me I am a text'} formIgnore={true} minLength={8}
                                   validators={[required]} helperText={"sdfsdfsd"}
                                   validationErrorMessages={{
                                       'required': 'hey please set me',
@@ -102,18 +123,53 @@ export class InputPage extends st.component {
                                   value={'yeah!!!'} maxLength={120}/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatInput ref={{inputTextRef: this}} name="withRequiredValidator" validators={[required]} label={'Address'}
+                        <MatInput ref={{inputTextRef: this}} name="withRequiredValidator" validators={[required]}
+                                  label={'Address'}
                                   characterCounter={true}
                                   validationErrorMessages={{'required': 'you forgot me'}}
                                   helperText={'required *'}
                                   value={'Schnaupping 16'} maxLength={20}/>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatInput ref={{inputDateRef: this}} name="dateRange" label={'Range between dates'} type="date" />
+                        <MatInput ref={{inputDateRef: this}} name="dateRange" label={'Range between dates'}
+                                  type="date"/>
+                    </div>
+                    <div class={['col', 's12']}>
+                        <MatInput ref={{passwordInputRef: this}} name="password" label="Password" type="password"
+                                  helperText="Enter here your password"
+                                  validators={[required, lowercase, uppercase, number, special, minLength(10)]}
+                                  onValidation={() => {
+                                      if (this.passwordRepeatInputRef.inputRef.value !== '') {
+                                          this.passwordRepeatInputRef.validate(true);
+                                      }
+                                  }}
+                                  validationErrorMessages={{
+                                      [REQUIRED]: 'This field is required',
+                                      [LOWERCASE]: 'Missing lowercase characters',
+                                      [UPPERCASE]: 'Missing uppercase characters',
+                                      [NUMBER]: 'Missing numbers',
+                                      [SPECIAL]: 'Missing special character -!$%^&*()_|~`{}\\[\\]:\\/;<>?,.@#\'"',
+                                      [MIN_LENGTH]: 'The required minimum length is ' + 10,
+                                  }}>
+                        </MatInput>
+                    </div>
+                    <div class={['col', 's12']}>
+
+                        <MatInput ref={{passwordRepeatInputRef: this}} name="passwordRepeat" label="Repeat password"
+                                  type="password"
+                                  helperText="Enter here your password"
+                                  validators={[required, validatorNameFactory((value: string) => {
+                                      return this.passwordInputRef.getValue() === value;
+                                  }, 'same')]}
+                                  validationErrorMessages={{
+                                      [REQUIRED]: 'This field is required',
+                                      same: 'Password are not equal'
+                                  }}>
+                        </MatInput>
                     </div>
                     <div class={['col', 's12']}>
                         <Container tag={"center"}>
-                            <button  class="btn" onClick={() => this.submitForm()}>Validate</button>
+                            <button class="btn" onClick={() => this.submitForm()}>Validate</button>
                         </Container>
                     </div>
                 </div>
@@ -124,7 +180,7 @@ export class InputPage extends st.component {
     async submitForm() {
         const formValidationResult = await this.formRef.validate();
         console.log('formValidationResult', formValidationResult, this.formRef.getState());
-        this.inputTextRef.value ="Yeah i am an input";
-        this.inputDateRef.valueAsDate =new Date();
+        this.inputTextRef.setValue("Yeah i am an input");
+        this.inputDateRef.setValueAsDate(new Date());
     }
 }

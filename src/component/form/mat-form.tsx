@@ -71,12 +71,12 @@ export class MatForm extends st.component<IAttrForm> {
     async validate(force: boolean = false): Promise<boolean> {
         return new Promise(async (resolve) => {
             let result = true;
-            const elementPromises = await this.getElements().map(element => element.validate(force));
+            const elementPromises = await Promise.all(this.getElements().map(element => element.validate(force)));
             if (elementPromises.filter(v => !v).length > 0) {
                 this.formRef.checkValidity();
                 result = false;
             }
-            const subFormPromises = await this.getSubForm().map(element => element.validate(force));
+            const subFormPromises = await Promise.all(this.getSubForm().map(element => element.validate(force)));
             if (subFormPromises.filter(v => !v).length > 0) {
                 result = false;
             }

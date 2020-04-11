@@ -104,6 +104,7 @@ export class MatValidation extends st.component<IAttrValidation> {
                     this.timeout = setTimeout(async () => {
                             const value = this.getValue();
                             if (force || !this.state || this.state.value !== value) {
+                                console.log('entered here mat validation')
                                 //set custom error
                                 this.target.setCustomValidity(' ');
 
