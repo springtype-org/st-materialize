@@ -4,7 +4,7 @@ import {IEventListener} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
 import {MatValidation, VALIDATION_PROPERTY_NAME} from "./mat-validation";
-import {htmlCollectionToArray} from "springtype/core/lang";
+import {htmlCollectionToArray, TYPE_FUNCTION} from "springtype/core/lang";
 
 export interface FromValidationDetail {
     valid: boolean,
@@ -17,6 +17,7 @@ export interface IAttrForm {
 
 export const FORM_PROPERTY_NAME = "MAT_FROM";
 export const FORM_IGNORE_PROPERTY_NAME = "MAT_FORM_IGNORE";
+export const FORM_VALUE_FUNCTION_KEY = "MAT_FORM_VALUE_FUNCTION";
 
 @component
 export class MatForm extends st.component<IAttrForm> {
@@ -101,15 +102,20 @@ export class MatForm extends st.component<IAttrForm> {
         return validationComponents;
     }
 
-    getState<TYPE>(): TYPE {
+    getState(): any {
         const formState: { [key: string]: any } = {};
         const radios: { [name: string]: RadioNodeList } = {};
         const elements = this.formRef.elements;
         for (const element of htmlCollectionToArray<HTMLElement>(elements)) {
+            const anyElement = element as any;
             if (
                 element instanceof HTMLButtonElement
-                || (element as any)[FORM_IGNORE_PROPERTY_NAME]) {
+                || anyElement[FORM_IGNORE_PROPERTY_NAME]) {
                 continue
+            }
+            if (anyElement[FORM_VALUE_FUNCTION_KEY] && typeof anyElement[FORM_VALUE_FUNCTION_KEY] === TYPE_FUNCTION) {
+                formState[anyElement.name] = anyElement[FORM_VALUE_FUNCTION_KEY]();
+                continue;
             }
 
             if (element instanceof HTMLInputElement) {
@@ -133,7 +139,7 @@ export class MatForm extends st.component<IAttrForm> {
         for (const form of this.getSubForm()) {
             formState[form.name] = form.getState();
         }
-        return formState as TYPE;
+        return formState;
     }
 
     getSubForm(): Array<MatForm> {

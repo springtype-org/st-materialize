@@ -214,19 +214,21 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     }
 
     onInputFocus = () => {
-        if (this.labelRef) {
-            this.labelRef.classList.add('active');
-        }
-        const matIcon = this.el.querySelector('.mat-icon');
-        if (matIcon) {
-            matIcon.classList.add('active')
-        }
-        const materialIcon = this.el.querySelector('.material-icons');
-        if (materialIcon) {
-            materialIcon.classList.add('active')
-        }
-        if (this.counterRef) {
-            this.counterRef.classList.remove('hide');
+        if (this.disabled || this.readonly) {
+            if (this.labelRef) {
+                this.labelRef.classList.add('active');
+            }
+            const matIcon = this.el.querySelector('.mat-icon');
+            if (matIcon) {
+                matIcon.classList.add('active')
+            }
+            const materialIcon = this.el.querySelector('.material-icons');
+            if (materialIcon) {
+                materialIcon.classList.add('active')
+            }
+            if (this.counterRef) {
+                this.counterRef.classList.remove('hide');
+            }
         }
     };
     onCharacterCounterUpdate = () => {

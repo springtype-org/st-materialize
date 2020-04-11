@@ -10,6 +10,7 @@ import {CheckboxPage} from "./page/checkbox";
 import {LoadingIndicatorPage} from "./page/loading-indicator";
 import {LoaderCirclePage} from "./page/loader-circle";
 import {Container} from "./cmp/container";
+import {SelectPage} from "./page/select";
 
 @component
 export class Main extends st.component {
@@ -31,6 +32,13 @@ export class Main extends st.component {
                                     <a class="btn" href="javascript:" onClick={() => st.route = {
                                         path: 'text-area'
                                     }}>Mat-TextArea</a>
+                                </Container>
+                            </div>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
+                                    <a class="btn" href="javascript:" onClick={() => st.route = {
+                                        path: 'select'
+                                    }}>Mat-Select</a>
                                 </Container>
                             </div>
                             <div class={['col', 's12']}><br/>
@@ -91,6 +99,9 @@ export class Main extends st.component {
                 </Route>
                 <Route path={'loader-circle'}>
                     <LoaderCirclePage/>
+                </Route>
+                <Route path={'select'}>
+                    <SelectPage/>
                 </Route>
             </RouteList>
         </div>
