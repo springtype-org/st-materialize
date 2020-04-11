@@ -34,7 +34,7 @@ export class MatLoadingIndicator extends st.component<IMatLoadingIndicatorAttrs>
 
     render() {
         return <div ref={{container: this}}
-                    class={["progress", "mat-loading-indicator", this.visible ? MAT_LOADING_INDICATOR_HIDE_CLASS : '']}>
+                    class={["progress", "mat-loading-indicator", !this.visible ? MAT_LOADING_INDICATOR_HIDE_CLASS : '']}>
             <div class="indeterminate"/>
         </div>
     }

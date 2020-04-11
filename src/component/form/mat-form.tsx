@@ -31,6 +31,8 @@ export class MatForm extends st.component<IAttrForm> {
     @event
     onFormValidation!: IEventListener<Event>;
 
+    validationReject!: (reason?: any) => void;
+
     dispatchFormValidation = (detail: FromValidationDetail) => {
         this.dispatchEvent<FromValidationDetail>("formValidation", {
             bubbles: true,
@@ -69,7 +71,7 @@ export class MatForm extends st.component<IAttrForm> {
     }
 
     async validate(force: boolean = false): Promise<boolean> {
-        return new Promise(async (resolve) => {
+        return await new Promise(async (resolve) => {
             let result = true;
             const elementPromises = await Promise.all(this.getElements().map(element => element.validate(force)));
             if (elementPromises.filter(v => !v).length > 0) {
