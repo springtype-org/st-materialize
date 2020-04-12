@@ -21,40 +21,58 @@ export class SelectPage extends st.component {
                     </div>
                     <div class={['col', 's12']}>
                         <MatSelect name="One" label="OneValue">
-                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v}  label={v}/>)}
+                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
                         <MatSelect name="multiple" label="Multiple" multiple={true}>
-                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v}  label={v}/>)}
+                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
                         <MatSelect name="selected" label="Selected" multiple={true}>
-                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v}  label={v} selected={true}/>)}
+                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}
+                                                                                    selected={true}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="readonlyWithValue" label="Readonly with value" multiple={true}  readonly={true}>
-                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v}  label={v} selected={true}/>)}
+                        <MatSelect name="readonlyWithValue" label="Readonly with value" multiple={true} readonly={true}>
+                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}
+                                                                                    selected={true}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="readonlyWithoutValue" label="Readonly without value" multiple={true} readonly={true}>
-                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v}  label={v}/>)}
+                        <MatSelect name="readonlyWithoutValue" label="Readonly without value" multiple={true}
+                                   readonly={true}>
+                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
                         <MatSelect name="disabled" label="disabled" multiple={true} disabled={true}>
-                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v}  label={v} selected={true}/>)}
+                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}
+                                                                                    selected={true}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="onwValueTransformer" label="Own value transformer" multiple={true} valueTransformer={(selected: Array<MatSelectItem>)=> {return selected.map(v=> v.item)}}>
-                            {[{accountId: 1, name: 'michael', email: 'michael@springtype.org', active: true},{accountId: 2, name: 'aron', email: 'aron@springtype.org', active: false}]
-                                .map(item => <MatSelectItem value={item.accountId.toString()}  label={item.name} selected={item.active} item={item}/>)
+                        <MatSelect name="onwValueTransformer" label="Own value transformer" multiple={true}
+                                   valueTransformer={(selected: Array<MatSelectItem>) => {
+                                       return selected.map(v => v.item)
+                                   }}
+                                   onSelectItem={(evt) => {
+                                       console.log('selected', evt.detail)
+                                   }}
+                                   onDeselectItem={(evt) => {
+                                       console.log('deselected', evt.detail)
+                                   }}>
+                            {[{
+                                accountId: 1,
+                                name: 'michael',
+                                email: 'michael@springtype.org',
+                                active: true
+                            }, {accountId: 2, name: 'aron', email: 'aron@springtype.org', active: false}]
+                                .map(item => <MatSelectItem value={item.accountId.toString()} label={item.name}
+                                                            selected={item.active} item={item}/>)
                             }
-
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
@@ -67,7 +85,7 @@ export class SelectPage extends st.component {
         </div>
     }
 
-    submitForm(){
+    submitForm() {
         const formState = this.formRef.getState();
         console.log(formState)
     }

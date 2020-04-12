@@ -4,7 +4,7 @@ import {IEventListener, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
 
-export interface MatSelectItemDetail {
+export interface MatSelectItemClickDetail {
     selected: boolean;
     item: MatSelectItem;
 }
@@ -14,7 +14,7 @@ export interface IAttrMatSelectItem {
     value: string;
     selected?: boolean;
     item?: any;
-    onSelectItem?: IEventListener<MatSelectItemDetail>
+    onSelectItem?: IEventListener<MatSelectItemClickDetail>
 }
 
 @component
@@ -36,10 +36,10 @@ export class MatSelectItem extends st.component<IAttrMatSelectItem> implements I
     selected: boolean = false;
 
     @event
-    onSelectItem!: IEventListener<MatSelectItemDetail>;
+    onSelectItemClick!: IEventListener<MatSelectItemClickDetail>;
 
-    dispatchItemSelect = (detail: MatSelectItemDetail) => {
-        this.dispatchEvent<MatSelectItemDetail>("selectItem", {
+    dispatchItemSelectClick = (detail: MatSelectItemClickDetail) => {
+        this.dispatchEvent<MatSelectItemClickDetail>("selectItemClick", {
             bubbles: true,
             cancelable: true,
             composed: true,
@@ -71,7 +71,7 @@ export class MatSelectItem extends st.component<IAttrMatSelectItem> implements I
     onSelectClick() {
         if (!this.disabled) {
             this.setSelected(!this.selected);
-            this.dispatchItemSelect({
+            this.dispatchItemSelectClick({
                 selected: this.selected,
                 item: this
             })

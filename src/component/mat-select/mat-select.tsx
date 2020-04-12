@@ -1,13 +1,19 @@
-import {attr, component} from "springtype/web/component";
+import {attr, component, event} from "springtype/web/component";
 import {st} from "springtype/core";
 import {IEvent, IEventListener, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
-import {MatSelectItem, MatSelectItemDetail} from "./mat-select-item";
+import {MatSelectItem, MatSelectItemClickDetail} from "./mat-select-item";
 import {MatInput} from "..";
 import {MatDropDown} from "./mat-select-drop-down";
 import {FORM_IGNORE_PROPERTY_NAME, FORM_VALUE_FUNCTION_KEY} from "../form";
 import {TYPE_FUNCTION} from "springtype/core/lang";
+
+export interface MatSelectItemDetail {
+    value: string;
+    label: string;
+    item: any;
+}
 
 export interface IAttrMatSelect {
     label: string;
@@ -20,8 +26,11 @@ export interface IAttrMatSelect {
     validators?: Array<(value: string) => Promise<boolean>>;
     valueTransformer?: (selected: Array<MatSelectItem>, items?: Array<MatSelectItem>, select?: MatSelect) => any;
 
-    onSelectItem?: IEventListener<MatSelectItemDetail>
+    onSelectItem?: IEventListener<MatSelectItemDetail>;
+    onDeselectItem?: IEventListener<MatSelectItemDetail>;
 }
+
+export const SELECT_PROPERTY_NAME = "MAT_SELECT";
 
 @component
 export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycle {
@@ -62,6 +71,33 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
     @ref
     inputFieldRef!: HTMLElement;
 
+    @event
+    onSelectItem!: IEventListener<MatSelectItemDetail>;
+
+    @event
+    onDeselectItem!: IEventListener<MatSelectItemDetail>;
+
+    dispatchSelectItem = (detail: MatSelectItemDetail) => {
+        this.dispatchEvent<MatSelectItemDetail>("selectItem", {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+            detail: {
+                ...detail,
+            },
+        });
+    };
+    dispatchDeselectItem = (detail: MatSelectItemDetail) => {
+        this.dispatchEvent<MatSelectItemDetail>("deselectItem", {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+            detail: {
+                ...detail,
+            },
+        });
+    };
+
     open = false;
     items: Array<MatSelectItem> = [];
     selectedItems: Array<MatSelectItem> = [];
@@ -78,7 +114,7 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
                           validators={this.validators}
                 />
                 <input ref={{inputHiddenRef: this}} name={this.name} disabled hidden={true}/>
-                <MatDropDown ref={{matDropdownRef: this}} onSelectItem={(evt) => this.onItemSelect(evt)}>
+                <MatDropDown ref={{matDropdownRef: this}} onSelectItemClick={(evt) => this.onItemSelect(evt)}>
                     {this.renderChildren()}
                 </MatDropDown>
                 <svg class="caret" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
@@ -114,6 +150,7 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
         for (const child of children) {
             if (child instanceof MatSelectItem) {
                 const matSelectItem = child as MatSelectItem;
+                (matSelectItem.el as any)[SELECT_PROPERTY_NAME] = this;
                 this.items.push(child);
                 if (matSelectItem.selected) {
                     this.selectedItems.push(matSelectItem);
@@ -155,15 +192,28 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
         this.matDropdownRef.el.setAttribute('style', `width: ${bounding.width}px`)
     };
 
-    onItemSelect = (evt: IEvent<MatSelectItemDetail>) => {
+    onItemSelect = (evt: IEvent<MatSelectItemClickDetail>) => {
         this.toggleSelect();
+        const eventDetail = evt.detail as MatSelectItemClickDetail;
 
-        this.setMatSelectedItem(evt.detail as MatSelectItemDetail);
-
+        this.setMatSelectedItem(eventDetail);
+        if (eventDetail.selected) {
+            this.dispatchSelectItem({
+                item: eventDetail.item.item,
+                value: eventDetail.item.value,
+                label: eventDetail.item.label
+            })
+        } else {
+            this.dispatchDeselectItem({
+                item: eventDetail.item.item,
+                value: eventDetail.item.value,
+                label: eventDetail.item.label
+            })
+        }
         this.updateSelectValue();
     };
 
-    setMatSelectedItem(detail: MatSelectItemDetail) {
+    setMatSelectedItem(detail: MatSelectItemClickDetail) {
         if (this.multiple) {
             if (detail.selected) {
                 this.selectedItems.push(detail.item);
