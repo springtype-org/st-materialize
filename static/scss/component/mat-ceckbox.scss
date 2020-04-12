@@ -1,0 +1,21 @@
+/* checkbox style*/
+input[type="checkbox"] + span:not(.lever){
+  margin-left: 4px;
+}
+/* invalid checkbox*/
+input[type="checkbox"]:not(:checked):not(.filled-in).invalid + span:not(.lever):before{
+  border: 2px solid $input-error-color;
+}
+
+input[type="checkbox"].invalid + span:not(.lever):after {
+  border: 2px solid $input-error-color;
+}
+
+/* valid checkbox */
+input[type="checkbox"]:not(:checked):not(.filled-in).valid + span:not(.lever):before{
+  border: 2px solid $input-success-color !important;
+}
+
+input[type="checkbox"].valid + span:not(.lever):after {
+  border: 2px solid $input-success-color !important;
+}

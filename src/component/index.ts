@@ -6,3 +6,6 @@ export * from "./mat-card/mat-card";
 export * from "./mat-loader-circle/mat-loader-circle";
 export * from "./mat-loading-indicator/mat-loading-indicator";
 export * from "./mat-checkbox/mat-checkbox";
+export * from "./mat-select/mat-select";
+export * from "./mat-select/mat-select-drop-down";
+export * from "./mat-select/mat-select-item";

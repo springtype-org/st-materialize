@@ -1,6 +1,6 @@
 {
   "name": "st-materialize",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.25",
   "publishConfig": {
     "access": "public"
   },
@@ -13,10 +13,12 @@
   },
   "author": "Michael Mannseicher <m.mansi1@gmx.net> & Aron Homberg <info@aron-homberg.de>",
   "license": "MIT",
-  "dependencies": {
-    "springtype": "^2.0.0-beta.64"
+  "peerDependencies": {
+    "@types/materialize-css": "^1.0.7",
+    "materialize-css": "^1.0.0"
   },
   "devDependencies": {
+    "springtype": "^2.0.0-beta.66",
     "typescript": "^3.7.4"
   }
 }

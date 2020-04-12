@@ -1,15 +1,16 @@
-import { st } from "springtype/core";
-import { component } from "springtype/web/component";
-import { Route, RouteList } from "springtype/web/router";
-import { tsx } from "springtype/web/vdom/tsx";
-import { InputPage } from "./page/input";
-import { TextAreaPage } from "./page/text-area";
-import { Center } from "./center";
-import { ModalPage } from "./page/modal";
-import { CardPage } from "./page/card";
-import { CheckboxPage } from "./page/checkbox";
-import { LoadingIndicatorPage } from "./page/loading-indicator";
-import { LoaderCirclePage } from "./page/loader-circle";
+import {st} from "springtype/core";
+import {component} from "springtype/web/component";
+import {Route, RouteList} from "springtype/web/router";
+import {tsx} from "springtype/web/vdom/tsx";
+import {InputPage} from "./page/input";
+import {TextAreaPage} from "./page/text-area";
+import {ModalPage} from "./page/modal";
+import {CardPage} from "./page/card";
+import {CheckboxPage} from "./page/checkbox";
+import {LoadingIndicatorPage} from "./page/loading-indicator";
+import {LoaderCirclePage} from "./page/loader-circle";
+import {Container} from "./cmp/container";
+import {SelectPage} from "./page/select";
 
 @component
 export class Main extends st.component {
@@ -19,78 +20,88 @@ export class Main extends st.component {
                 <Route path={['', '*']}>
                     <div class={['container']}>
                         <div class={['row']}>
-                            <div class={['col', 's12']}><br />
-                                <Center>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
                                     <a class="btn" href="javascript:" onClick={() => st.route = {
                                         path: 'input'
                                     }}>Mat-Input</a>
-                                </Center>
+                                </Container>
                             </div>
-                            <div class={['col', 's12']}><br />
-                                <Center>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
                                     <a class="btn" href="javascript:" onClick={() => st.route = {
                                         path: 'text-area'
                                     }}>Mat-TextArea</a>
-                                </Center>
+                                </Container>
                             </div>
-                            <div class={['col', 's12']}><br />
-                                <Center>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
+                                    <a class="btn" href="javascript:" onClick={() => st.route = {
+                                        path: 'select'
+                                    }}>Mat-Select</a>
+                                </Container>
+                            </div>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
                                     <a class="btn" href="javascript:" onClick={() => st.route = {
                                         path: 'modal'
                                     }}>Mat-Modal</a>
-                                </Center>
+                                </Container>
                             </div>
-                            <div class={['col', 's12']}><br />
-                                <Center>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
                                     <a class="btn" href="javascript:" onClick={() => st.route = {
                                         path: 'card'
                                     }}>Mat-Card</a>
-                                </Center>
+                                </Container>
                             </div>
-                            <div class={['col', 's12']}><br />
-                                <Center>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
                                     <a class="btn" href="javascript:" onClick={() => st.route = {
                                         path: 'checkbox'
                                     }}>Mat-Checkbox</a>
-                                </Center>
+                                </Container>
                             </div>
-                            <div class={['col', 's12']}><br />
-                                <Center>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
                                     <a class="btn" href="javascript:" onClick={() => st.route = {
                                         path: 'loading-indicator'
                                     }}>Mat-Loading-Indicator</a>
-                                </Center>
+                                </Container>
                             </div>
-                            <div class={['col', 's12']}><br />
-                                <Center>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
                                     <a class="btn" href="javascript:" onClick={() => st.route = {
                                         path: 'loader-circle'
                                     }}>Mat-Loader-Circle</a>
-                                </Center>
+                                </Container>
                             </div>
                         </div>
                     </div>
                 </Route>
                 <Route path={['input']}>
-                    <InputPage />
+                    <InputPage/>
                 </Route>
                 <Route path={'text-area'}>
-                    <TextAreaPage />
+                    <TextAreaPage/>
                 </Route>
                 <Route path={'modal'}>
-                    <ModalPage />
+                    <ModalPage/>
                 </Route>
                 <Route path={'card'}>
-                    <CardPage />
+                    <CardPage/>
                 </Route>
                 <Route path={'checkbox'}>
-                    <CheckboxPage />
+                    <CheckboxPage/>
                 </Route>
                 <Route path={'loading-indicator'}>
-                    <LoadingIndicatorPage />
+                    <LoadingIndicatorPage/>
                 </Route>
                 <Route path={'loader-circle'}>
-                    <LoaderCirclePage />
+                    <LoaderCirclePage/>
+                </Route>
+                <Route path={'select'}>
+                    <SelectPage/>
                 </Route>
             </RouteList>
         </div>

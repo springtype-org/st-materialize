@@ -1,8 +1,8 @@
-import { st } from "springtype/core";
-import { component } from "springtype/web/component";
-import { tsx } from "springtype/web/vdom";
-import { MatLoaderCircle } from "../../../src/component";
-import { ref } from "springtype/core/ref";
+import {st} from "springtype/core";
+import {component} from "springtype/web/component";
+import {tsx} from "springtype/web/vdom";
+import {ref} from "springtype/core/ref";
+import {MatLoaderCircle} from "../../../src/component";
 
 @component
 export class LoaderCirclePage extends st.component {
@@ -18,18 +18,20 @@ export class LoaderCirclePage extends st.component {
                         <h4>MatLoaderCircle</h4>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatLoaderCircle ref={{ loaderCircle: this }} />
+                        <MatLoaderCircle ref={{loaderCircle: this}}/>
                     </div>
 
                     <div class={['col', 's12']}>
-                        <a href="javascript:" onclick={() => this.loaderCircle.setVisible(true)} class="left modal-close waves-effect btn-footer-secondary waves-white btn mat-align-middle">
+                        <a href="javascript:" onclick={() => this.loaderCircle.setVisible(true)}
+                           class="left modal-close waves-effect btn-footer-secondary waves-white btn mat-align-middle">
                             <i class="material-icons">visibility</i> &nbsp;Show
                         </a>
                     </div>
 
                     <div class={['col', 's12']}>
-                        <br />
-                        <a href="javascript:" onclick={() => this.loaderCircle.setVisible(false)} class="left modal-close waves-effect btn-footer-secondary waves-white btn mat-align-middle">
+                        <br/>
+                        <a href="javascript:" onclick={() => this.loaderCircle.setVisible(false)}
+                           class="left modal-close waves-effect btn-footer-secondary waves-white btn mat-align-middle">
                             <i class="material-icons">visibility_off</i> &nbsp;Hide
                         </a>
                     </div>

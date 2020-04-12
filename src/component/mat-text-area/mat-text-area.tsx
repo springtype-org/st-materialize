@@ -1,22 +1,24 @@
 import {st} from "springtype/core";
-import {ILifecycle} from "springtype/web/component/interface";
+import {IEvent, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function/get-unique-html-id";
-import {Validation} from "../form/validation";
+import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {IVirtualNode} from "springtype/web/vdom/interface";
-import {TYPE_UNDEFINED} from "springtype/core/lang";
+import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, required} from "springtype/core/validate";
+import {matGetConfig} from "../../config";
 
-export interface IAttrMatTextArea {
+export interface IAttrMatTextArea extends IAttrValidation {
     label: string | IVirtualNode;
     helperText: string | IVirtualNode;
     characterCounter: boolean;
-    validators: Array<(value: string) => Promise<boolean>>;
+
     validationErrorMessages: { [error: string]: string | IVirtualNode };
     validationSuccessMessage: string;
     formIgnore?: boolean;
+    setValidClass?: boolean;
 
     name: string;
     value?: string;
@@ -36,19 +38,16 @@ export interface IAttrMatTextArea {
 export class MatTextArea extends st.component<IAttrMatTextArea> implements ILifecycle {
 
     @attr
-    label: string | IVirtualNode = '';
+    label: string = '';
 
     @attr
-    helperText: string | IVirtualNode = '';
+    helperText: string = '';
 
     @attr
     characterCounter: boolean = false;
 
     @attr
-    validators: Array<(value: string) => Promise<boolean>> = [];
-
-    @attr
-    validationErrorMessages: { [error: string]: string | IVirtualNode } = {};
+    validationErrorMessages: { [error: string]: string } = {};
 
     @attr
     validationSuccessMessage: string = '';
@@ -57,6 +56,9 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
      */
     @attr
     formIgnore: boolean = false;
+
+    @attr
+    setValidClass: boolean = matGetConfig().setValidClass;
 
     /**
      * text-area specific stuff
@@ -98,6 +100,16 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     @attr
     hidden!: boolean;
 
+    //validation properties
+    @attr
+    eventListeners!: Array<string>;
+
+    @attr
+    debounceTimeInMs!: number;
+
+    @attr
+    validators: Array<(value: any) => Promise<boolean>> = [];
+
     @ref
     textAreaRef!: HTMLTextAreaElement;
 
@@ -110,6 +122,9 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     @ref
     counterRef!: HTMLSpanElement;
 
+    @ref
+    validationRef!: MatValidation;
+
     textAreaId: string;
 
 
@@ -119,7 +134,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     }
 
     render() {
-        const internalValidators = this.validators;
+        const internalValidators = [];
 
         if (typeof this.required !== TYPE_UNDEFINED) {
             internalValidators.push(required)
@@ -131,23 +146,17 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
             internalValidators.push(minLength(this.minLength))
         }
 
+        let label;
 
-        let spanHelperTextAndCounter, label;
-        if (this.helperText || this.validationSuccessMessage || this.characterCounter) {
-            spanHelperTextAndCounter = <div class="mat-input-helper-counter">
-                <span ref={{helperSpanRef: this}} class="helper-text"
-                      data-success={this.validationSuccessMessage} style="flex: 1">{this.helperText}
-            </span>
-                <span ref={{counterRef: this}}
-                      class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>{this.getCharacterCountText(this.value)}</span>
-            </div>
-        }
         if (this.label) {
             label = <label ref={{labelRef: this}}
                            class={[this.value || this.placeholder ? 'active' : '']}
                            for={this.textAreaId}>{this.label}</label>
         }
-        return <Validation validators={internalValidators}>
+        return <MatValidation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
+                              onValidation={(evt) => this.onAfterValidate(evt)}
+                              debounceTimeInMs={this.debounceTimeInMs}
+                              eventListeners={this.eventListeners}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
                 <textarea ref={{textAreaRef: this}} class={['materialize-textarea']}
@@ -175,33 +184,42 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                           onBlur={() => this.onInputBlur()}>
                     {this.value}
                 </textarea>
-                {label}{spanHelperTextAndCounter}
-
+                {label}
+                <div ref={{helperTextRef: this}} class="mat-input-helper-counter helper-text"
+                     data-success={this.validationSuccessMessage}>
+                    <span style={{flex: 1}}>{this.helperText}</span>
+                    <span ref={{counterRef: this}}
+                          class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>
+                        {this.getCharacterCountText(this.value)}
+                    </span>
+                </div>
             </div>
-        </Validation>
+        </MatValidation>
     }
 
     onAfterRender(): void {
         super.onAfterRender();
         if (this.formIgnore) {
-            this.textAreaRef.setAttribute('form-ignore', '');
+            (this.textAreaRef as any)[FORM_IGNORE_PROPERTY_NAME] = true;
         }
     }
 
     onInputFocus = () => {
-        if (this.labelRef) {
-            this.labelRef.classList.add('active');
-        }
-        const matIcon = this.el.querySelector('.mat-icon');
-        if (matIcon) {
-            matIcon.classList.add('active')
-        }
-        const materialIcon = this.el.querySelector('.material-icons');
-        if (materialIcon) {
-            materialIcon.classList.add('active')
-        }
-        if (this.counterRef) {
-            this.counterRef.classList.remove('hide');
+        if (!this.disabled && !this.readonly) {
+            if (this.labelRef) {
+                this.labelRef.classList.add('active');
+            }
+            const matIcon = this.el.querySelector('.mat-icon');
+            if (matIcon) {
+                matIcon.classList.add('active')
+            }
+            const materialIcon = this.el.querySelector('.material-icons');
+            if (materialIcon) {
+                materialIcon.classList.add('active')
+            }
+            if (this.counterRef) {
+                this.counterRef.classList.remove('hide');
+            }
         }
     };
 
@@ -221,8 +239,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
             const lines = value.split(/\r*\n/).length;
             return ((lines - 1) * 21) + 45;
         }
-
-        return 54
+        return 45
     }
 
     getDefaultHeight() {
@@ -262,4 +279,49 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
             materialIcon.classList.remove('active')
         }
     };
+
+    onAfterValidate = (evt: IEvent<ValidationEventDetail>) => {
+        if (!this.disabled && !this.readonly) {
+            const details = evt.detail as ValidationEventDetail;
+            this.helperTextRef.removeAttribute("data-error");
+            this.textAreaRef.classList.remove('valid', 'invalid');
+            if (!details.valid) {
+                this.textAreaRef.classList.add('invalid');
+                const error = this.getError(details.errors);
+                if (error) {
+                    this.helperTextRef.setAttribute("data-error", error);
+                }
+            } else if (this.setValidClass) {
+                this.textAreaRef.classList.add('valid');
+            }
+        }
+    };
+
+    getError(errors: Array<string>) {
+        for (const error of errors) {
+            const message = this.validationErrorMessages[error];
+            if (message) {
+                return message;
+            }
+        }
+    }
+
+    getValue() {
+        return this.textAreaRef.value;
+    }
+
+    setValue(value: string) {
+        this.textAreaRef.value = value;
+        this.onAfterManualChange();
+    }
+
+    onAfterManualChange() {
+        if (!!this.textAreaRef.value) {
+            this.onInputFocus();
+        }
+    }
+
+    async validate(force: boolean = false) {
+        return await this.validationRef.validate(force);
+    }
 }

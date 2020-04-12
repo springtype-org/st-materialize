@@ -1,25 +1,26 @@
 import {st} from "springtype/core";
-import {ILifecycle} from "springtype/web/component/interface";
+import {IEvent, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function/get-unique-html-id";
-import {Validation} from "../form/validation";
-import {IVirtualNode} from "springtype/web/vdom/interface";
-import {TYPE_UNDEFINED} from "springtype/core/lang";
-import {IValidator} from "springtype/core/validate/interface/ivalidator";
+import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
+import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, pattern, required} from "springtype/core/validate";
 import {min} from "../validate/min";
 import {max} from "../validate/max";
+import {matGetConfig} from "../../config";
 
-export interface IAttrMatTextInput {
-    label?: string | IVirtualNode;
-    helperText?: string | IVirtualNode;
+export interface IAttrMatTextInput extends IAttrValidation {
+    label?: string;
+    helperText?: string;
     characterCounter?: boolean;
     validators?: Array<(value: string | number | Date) => Promise<boolean>>;
-    validationErrorMessages?: { [error: string]: string | IVirtualNode };
+
+    validationErrorMessages?: { [error: string]: string };
     validationSuccessMessage?: string;
     formIgnore?: boolean;
+    setValidClass?: boolean;
 
     name: string;
     value?: string;
@@ -40,19 +41,16 @@ export interface IAttrMatTextInput {
 export class MatInput extends st.component<IAttrMatTextInput> implements ILifecycle {
 
     @attr
-    label: string | IVirtualNode = '';
+    label: string = '';
 
     @attr
-    helperText: string | IVirtualNode = '';
+    helperText: string = '';
 
     @attr
     characterCounter: boolean = false;
 
     @attr
-    validators: Array<(value: string | number | Date) => Promise<boolean>> = [];
-
-    @attr
-    validationErrorMessages: { [error: string]: string | IVirtualNode } = {};
+    validationErrorMessages: { [error: string]: string } = {};
 
     @attr
     validationSuccessMessage: string = '';
@@ -62,6 +60,9 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
      */
     @attr
     formIgnore: boolean = false;
+
+    @attr
+    setValidClass: boolean = matGetConfig().setValidClass;
 
     /**
      * Input specific stuff
@@ -106,6 +107,16 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     @attr
     hidden!: boolean;
 
+    //validation properties
+    @attr
+    eventListeners!: Array<string>;
+
+    @attr
+    debounceTimeInMs!: number;
+
+    @attr
+    validators: Array<(value: any) => Promise<boolean>> = [];
+
     @ref
     inputRef!: HTMLInputElement;
 
@@ -118,8 +129,10 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     @ref
     counterRef!: HTMLSpanElement;
 
-    inputId: string;
+    @ref
+    validationRef!: MatValidation;
 
+    inputId: string;
 
     constructor() {
         super();
@@ -127,7 +140,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     }
 
     render() {
-        const internalValidators = this.validators;
+        const internalValidators = [];
 
         if (typeof this.required !== TYPE_UNDEFINED) {
             internalValidators.push(required)
@@ -138,36 +151,28 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
         if (typeof this.minLength !== TYPE_UNDEFINED) {
             internalValidators.push(minLength(this.minLength))
         }
-        if (typeof this.pattern !== TYPE_UNDEFINED) {
-            internalValidators.push(pattern(this.pattern))
-        }
         if (typeof this.max !== TYPE_UNDEFINED) {
             internalValidators.push(min(this.min))
         }
         if (typeof this.min !== TYPE_UNDEFINED) {
             internalValidators.push(max(this.max))
         }
-
-
-        let spanHelperTextAndCounter, label;
-        if (this.helperText || this.validationSuccessMessage || this.characterCounter) {
-            spanHelperTextAndCounter = <div class="mat-input-helper-counter">
-                <span ref={{helperSpanRef: this}} class="helper-text"
-                      data-success={this.validationSuccessMessage} style="flex: 1">{this.helperText}
-            </span>
-                <span ref={{counterRef: this}}
-                      class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>{this.getCharacterCountText(this.value)}</span>
-            </div>
+        if (typeof this.pattern !== TYPE_UNDEFINED) {
+            internalValidators.push(pattern(this.pattern))
         }
+
+        let label;
         if (this.label) {
             label = <label ref={{labelRef: this}}
                            class={[this.value || this.placeholder || this.type === 'date' ? 'active' : '']}
                            for={this.inputId}>{this.label}</label>
         }
-        return <Validation validators={internalValidators}>
+        return <MatValidation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
+                              eventListeners={this.eventListeners} debounceTimeInMs={this.debounceTimeInMs}
+                              onValidation={(evt) => this.onAfterValidate(evt)}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
-                <input ref={{inputRef: this}} attrs={{
+                <input tabIndex={0} ref={{inputRef: this}} attrs={{
                     id: this.inputId,
                     name: this.name,
                     type: this.type,
@@ -186,34 +191,44 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                 }}
                        onInput={() => this.onCharacterCounterUpdate()}
                        onFocus={() => this.onInputFocus()}
-                       onBlur={() => this.onInputBlur()}/>
-                {label}{spanHelperTextAndCounter}
-
+                       onBlur={() => this.onInputBlur()}
+                />
+                {label}
+                <div ref={{helperTextRef: this}} class="helper-text mat-input-helper-counter"
+                     data-success={this.validationSuccessMessage}>
+                    <span style={{flex: 1}}>{this.helperText}</span>
+                    <span ref={{counterRef: this}}
+                          class={["character-counter", this.value && this.characterCounter ? '' : 'hide']}>
+                        {this.getCharacterCountText(this.value)}
+                    </span>
+                </div>
             </div>
-        </Validation>
+        </MatValidation>
     }
 
     onAfterRender(): void {
         super.onAfterRender();
         if (this.formIgnore) {
-            this.inputRef.setAttribute('form-ignore', '');
+            (this.inputRef as any)[FORM_IGNORE_PROPERTY_NAME] = true;
         }
     }
 
     onInputFocus = () => {
-        if (this.labelRef) {
-            this.labelRef.classList.add('active');
-        }
-        const matIcon = this.el.querySelector('.mat-icon');
-        if (matIcon) {
-            matIcon.classList.add('active')
-        }
-        const materialIcon = this.el.querySelector('.material-icons');
-        if (materialIcon) {
-            materialIcon.classList.add('active')
-        }
-        if (this.counterRef) {
-            this.counterRef.classList.remove('hide');
+        if (!this.disabled && !this.readonly) {
+            if (this.labelRef) {
+                this.labelRef.classList.add('active');
+            }
+            const matIcon = this.el.querySelector('.mat-icon');
+            if (matIcon) {
+                matIcon.classList.add('active')
+            }
+            const materialIcon = this.el.querySelector('.material-icons');
+            if (materialIcon) {
+                materialIcon.classList.add('active')
+            }
+            if (this.counterRef) {
+                this.counterRef.classList.remove('hide');
+            }
         }
     };
     onCharacterCounterUpdate = () => {
@@ -268,5 +283,77 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                 return range.toString();
             }
         }
+    }
+
+    onAfterValidate = (evt: IEvent<ValidationEventDetail>) => {
+        if (!this.readonly && !this.disabled) {
+            const details = evt.detail as ValidationEventDetail;
+            this.helperTextRef.removeAttribute("data-error");
+            this.inputRef.classList.remove('valid', 'invalid');
+            if (!details.valid) {
+                this.inputRef.classList.add('invalid');
+                const error = this.getError(details.errors);
+                if (error) {
+                    this.helperTextRef.setAttribute("data-error", error);
+                }
+            } else if (this.setValidClass) {
+                this.inputRef.classList.add('valid');
+            }
+        }
+    };
+
+    getError(errors: Array<string>) {
+        for (const error of errors) {
+            const message = this.validationErrorMessages[error];
+            if (message) {
+                return message;
+            }
+        }
+    }
+
+    getValue() {
+        return this.inputRef.value;
+    }
+
+    getChecked() {
+        return this.inputRef.checked;
+    }
+
+    getValueAsNumber() {
+        return this.inputRef.valueAsNumber;
+    }
+
+    getValueAsDate() {
+        return this.inputRef.valueAsDate;
+    }
+
+    setValue(value: string) {
+        this.inputRef.value = value;
+        this.onAfterManualChange();
+    }
+
+    setChecked(checked: boolean) {
+        this.inputRef.checked = checked;
+        this.onAfterManualChange();
+    }
+
+    setValueAsNumber(number: number) {
+        this.inputRef.valueAsNumber = number;
+        this.onAfterManualChange();
+    }
+
+    setValueAsDate(date: Date) {
+        this.inputRef.valueAsDate = date;
+        this.onAfterManualChange();
+    }
+
+    onAfterManualChange() {
+        if (!!this.inputRef.value) {
+            this.onInputFocus();
+        }
+    }
+
+    async validate(force: boolean = false) {
+        return await this.validationRef.validate(force);
     }
 }

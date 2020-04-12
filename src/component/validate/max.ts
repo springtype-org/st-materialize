@@ -6,7 +6,7 @@ const VALIDATOR_NAME = 'min';
 
 export const max = (maximum: number | Date) => validatorNameFactory((value: number | Date): boolean => {
     if (typeof value === TYPE_STRING) {
-        st.error('validator min can not be applied on string values')
+        st.error('validator max can not be applied on string values')
     }
     if (typeof value === 'number' || value instanceof Date) {
         return value <= maximum;
