@@ -4,7 +4,7 @@ import {IEventListener, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
 
-export interface MatSelectItemClickDetail {
+export interface MatSelectItemDetail {
     selected: boolean;
     item: MatSelectItem;
 }
@@ -14,7 +14,7 @@ export interface IAttrMatSelectItem {
     value: string;
     selected?: boolean;
     item?: any;
-    onMatSelectItemClick?: IEventListener<MatSelectItemClickDetail>
+    onSelectItem?: IEventListener<MatSelectItemDetail>
 }
 
 @component
@@ -36,10 +36,10 @@ export class MatSelectItem extends st.component<IAttrMatSelectItem> implements I
     selected: boolean = false;
 
     @event
-    onMatSelectItemClick!: IEventListener<MatSelectItemClickDetail>;
+    onSelectItem!: IEventListener<MatSelectItemDetail>;
 
-    dispatchMatSelectItemClick = (detail: MatSelectItemClickDetail) => {
-        this.dispatchEvent<MatSelectItemClickDetail>("matSelectItemClick", {
+    dispatchItemSelect = (detail: MatSelectItemDetail) => {
+        this.dispatchEvent<MatSelectItemDetail>("selectItem", {
             bubbles: true,
             cancelable: true,
             composed: true,
@@ -57,7 +57,6 @@ export class MatSelectItem extends st.component<IAttrMatSelectItem> implements I
     }
 
 
-
     getItemClasses() {
         const classes = [];
         if (this.disabled) {
@@ -72,15 +71,16 @@ export class MatSelectItem extends st.component<IAttrMatSelectItem> implements I
     onSelectClick() {
         if (!this.disabled) {
             this.setSelected(!this.selected);
-            this.dispatchMatSelectItemClick({
+            this.dispatchItemSelect({
                 selected: this.selected,
                 item: this
             })
+
         }
     }
 
-    setSelected(selected: boolean){
-        this.selected =  selected;
+    setSelected(selected: boolean) {
+        this.selected = selected;
         this.itemLiRef.setAttribute('class',
             this.getItemClasses().join(' ')
         );

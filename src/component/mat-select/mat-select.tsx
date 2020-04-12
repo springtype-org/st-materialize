@@ -1,9 +1,9 @@
 import {attr, component} from "springtype/web/component";
 import {st} from "springtype/core";
-import {IEvent, ILifecycle} from "springtype/web/component/interface";
+import {IEvent, IEventListener, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
-import {MatSelectItem, MatSelectItemClickDetail} from "./mat-select-item";
+import {MatSelectItem, MatSelectItemDetail} from "./mat-select-item";
 import {MatInput} from "..";
 import {MatDropDown} from "./mat-select-drop-down";
 import {FORM_IGNORE_PROPERTY_NAME, FORM_VALUE_FUNCTION_KEY} from "../form";
@@ -19,6 +19,8 @@ export interface IAttrMatSelect {
     formIgnore?: boolean;
     validators?: Array<(value: string) => Promise<boolean>>;
     valueTransformer?: (selected: Array<MatSelectItem>, items?: Array<MatSelectItem>, select?: MatSelect) => any;
+
+    onSelectItem?: IEventListener<MatSelectItemDetail>
 }
 
 @component
@@ -76,7 +78,7 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
                           validators={this.validators}
                 />
                 <input ref={{inputHiddenRef: this}} name={this.name} disabled hidden={true}/>
-                <MatDropDown ref={{matDropdownRef: this}} onMatSelectItemClick={(evt) => this.onItemSelect(evt)}>
+                <MatDropDown ref={{matDropdownRef: this}} onSelectItem={(evt) => this.onItemSelect(evt)}>
                     {this.renderChildren()}
                 </MatDropDown>
                 <svg class="caret" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
@@ -153,15 +155,15 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
         this.matDropdownRef.el.setAttribute('style', `width: ${bounding.width}px`)
     };
 
-    onItemSelect = (evt: IEvent<MatSelectItemClickDetail>) => {
+    onItemSelect = (evt: IEvent<MatSelectItemDetail>) => {
         this.toggleSelect();
 
-        this.setMatSelectedItem(evt.detail as MatSelectItemClickDetail);
+        this.setMatSelectedItem(evt.detail as MatSelectItemDetail);
 
         this.updateSelectValue();
     };
 
-    setMatSelectedItem(detail: MatSelectItemClickDetail) {
+    setMatSelectedItem(detail: MatSelectItemDetail) {
         if (this.multiple) {
             if (detail.selected) {
                 this.selectedItems.push(detail.item);

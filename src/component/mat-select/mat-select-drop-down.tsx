@@ -1,11 +1,10 @@
 import {component} from "springtype/web/component";
 import {st} from "springtype/core";
 import {IEventListener} from "springtype/web/component/interface";
-import {MatSelectItemClickDetail} from "./mat-select-item";
+import {MatSelectItemDetail} from "./mat-select-item";
 
 export interface IAttrMatDropDown {
-    onMatSelectItemClick?: IEventListener<MatSelectItemClickDetail>
-
+    onSelectItem?: IEventListener<MatSelectItemDetail>
 }
 
 export const DROP_DOWN_SHOW_CLASS = 'show';
