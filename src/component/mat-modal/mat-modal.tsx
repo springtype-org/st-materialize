@@ -42,13 +42,18 @@ export class MatModal extends st.component<IMatModalAttrs> implements ILifecycle
         </fragment>
     }
 
-    toggle() {
-        this.state.open = !this.state.open;
+    setVisible(isVisible: boolean) {
 
+        this.state.open = isVisible;
         if (this.state.open) {
             this.container.classList.add('open');
         } else {
             this.container.classList.remove('open');
         }
+    }
+
+    toggle() {
+        this.state.open = !this.state.open;
+        this.setVisible(this.state.open);
     }
 }
