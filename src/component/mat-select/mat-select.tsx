@@ -9,6 +9,8 @@ import {MatDropDown} from "./mat-select-drop-down";
 import {FORM_IGNORE_PROPERTY_NAME, FORM_VALUE_FUNCTION_KEY} from "../form";
 import {TYPE_FUNCTION} from "springtype/core/lang";
 
+export type MatSelectType = 'multiple' | 'single' | 'single-deselect';
+
 export interface MatSelectItemDetail {
     value: string;
     label: string;
@@ -18,7 +20,7 @@ export interface MatSelectItemDetail {
 export interface IAttrMatSelect {
     label: string;
     name: string;
-    multiple?: boolean;
+    type?: MatSelectType;
     ignore?: boolean;
     readonly?: boolean;
 
@@ -36,7 +38,7 @@ export const SELECT_PROPERTY_NAME = "MAT_SELECT";
 export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycle {
 
     @attr
-    multiple = false;
+    type: MatSelectType = 'single';
 
     @attr
     ignore: boolean = false;
@@ -196,25 +198,59 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
         this.toggleSelect();
         const eventDetail = evt.detail as MatSelectItemClickDetail;
 
-        this.setMatSelectedItem(eventDetail);
-        if (eventDetail.selected) {
+        if (this.type == "multiple") {
+            if (eventDetail.selected) {
+                this.dispatchSelectItem({
+                    item: eventDetail.item.item,
+                    value: eventDetail.item.value,
+                    label: eventDetail.item.label
+                })
+            } else {
+                this.dispatchDeselectItem({
+                    item: eventDetail.item.item,
+                    value: eventDetail.item.value,
+                    label: eventDetail.item.label
+                })
+            }
+        }
+        if (this.type === 'single-deselect') {
+            if (eventDetail.selected) {
+                this.dispatchSelectItem({
+                    item: eventDetail.item.item,
+                    value: eventDetail.item.value,
+                    label: eventDetail.item.label
+                })
+            } else {
+                this.dispatchDeselectItem({
+                    item: eventDetail.item.item,
+                    value: eventDetail.item.value,
+                    label: eventDetail.item.label
+                })
+            }
+            if (this.selectedItems.length > 0 && eventDetail.item.value !== this.selectedItems[0].value) {
+                this.dispatchDeselectItem({
+                    item: this.selectedItems[0].item,
+                    value: this.selectedItems[0].value,
+                    label: this.selectedItems[0].label
+                })
+            }
+        }
+
+        if (this.type === "single" && eventDetail.selected) {
             this.dispatchSelectItem({
                 item: eventDetail.item.item,
                 value: eventDetail.item.value,
                 label: eventDetail.item.label
             })
-        } else {
-            this.dispatchDeselectItem({
-                item: eventDetail.item.item,
-                value: eventDetail.item.value,
-                label: eventDetail.item.label
-            })
         }
+
+        this.setMatSelectedItem(eventDetail);
+
         this.updateSelectValue();
     };
 
     setMatSelectedItem(detail: MatSelectItemClickDetail) {
-        if (this.multiple) {
+        if (this.type === 'multiple') {
             if (detail.selected) {
                 this.selectedItems.push(detail.item);
             } else {
@@ -226,16 +262,21 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
                     }
                 }
             }
-        } else {
+        } else if (this.type === 'single-deselect') {
             if (detail.selected) {
                 for (const selected of this.selectedItems) {
                     selected.setSelected(false);
                 }
-                this.selectedItems = [];
-                this.selectedItems.push(detail.item);
+                this.selectedItems = [detail.item];
             } else {
                 this.selectedItems = [];
             }
+        } else if (this.type === 'single') {
+            for (const selected of this.selectedItems) {
+                selected.setSelected(false);
+            }
+            detail.item.setSelected(true);
+            this.selectedItems = [detail.item];
         }
     }
 

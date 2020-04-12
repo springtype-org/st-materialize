@@ -20,41 +20,51 @@ export class SelectPage extends st.component {
                         <h4>Mat-Select</h4>
                     </div>
                     <div class={['col', 's12']}>
+                        <MatSelect name="One" label="OneValue" onSelectItem={(evt) => console.log('selected', evt.detail)}>
+                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
+                        </MatSelect>
+                    </div>
+                    <div class={['col', 's12']}>
+                        <MatSelect name="single-deselect" label="Single deselect" type={'single-deselect'} onSelectItem={(evt) => console.log('selected', evt.detail)} onDeselectItem={(evt) => console.log('deselected', evt.detail)}>
+                            {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
+                        </MatSelect>
+                    </div>
+                    <div class={['col', 's12']}>
                         <MatSelect name="One" label="OneValue">
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="multiple" label="Multiple" multiple={true}>
+                        <MatSelect name="multiple" label="Multiple" type={'multiple'}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="selected" label="Selected" multiple={true}>
+                        <MatSelect name="selected" label="Selected" type={'multiple'}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}
                                                                                     selected={true}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="readonlyWithValue" label="Readonly with value" multiple={true} readonly={true}>
+                        <MatSelect name="readonlyWithValue" label="Readonly with value" type={'multiple'} readonly={true}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}
                                                                                     selected={true}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="readonlyWithoutValue" label="Readonly without value" multiple={true}
+                        <MatSelect name="readonlyWithoutValue" label="Readonly without value" type={'multiple'}
                                    readonly={true}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="disabled" label="disabled" multiple={true} disabled={true}>
+                        <MatSelect name="disabled" label="disabled" type={'multiple'} disabled={true}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}
                                                                                     selected={true}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="onwValueTransformer" label="Own value transformer" multiple={true}
+                        <MatSelect name="onwValueTransformer" label="Own value transformer" type={'multiple'}
                                    valueTransformer={(selected: Array<MatSelectItem>) => {
                                        return selected.map(v => v.item)
                                    }}
