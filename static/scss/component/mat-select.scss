@@ -21,3 +21,15 @@
   transform-origin: 100% 0;
   transform: scaleX(1) scaleY(1);
 }
+.select-dropdown li i{
+  margin: 0
+}
+.select-dropdown li i svg {
+  height: 40px;
+  width: 40px;
+  margin: 5px 15px;
+  float: right;
+}
+.select-dropdown li i.color svg {
+  fill: $dropdown-color;
+}

@@ -53,6 +53,7 @@ export class MatSelectItem extends st.component<IAttrMatSelectItem> implements I
     render() {
         return <li ref={{itemLiRef: this}} tabindex="0" class={this.getItemClasses()}
                    onClick={() => this.onSelectClick()}>
+            {this.renderChildren()}
             <span>{this.label}</span></li>
     }
 

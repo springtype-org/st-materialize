@@ -6,6 +6,7 @@ import {MatForm} from "../../../src/component/form";
 import {MatSelect} from "../../../src/component/mat-select/mat-select";
 import {MatSelectItem} from "../../../src/component/mat-select/mat-select-item";
 import {Container} from "../cmp/container";
+import {MatIcon} from "../../../src/component";
 
 @component
 export class SelectPage extends st.component {
@@ -20,12 +21,15 @@ export class SelectPage extends st.component {
                         <h4>Mat-Select</h4>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="One" label="OneValue" onSelectItem={(evt) => console.log('selected', evt.detail)}>
+                        <MatSelect name="One" label="OneValue"
+                                   onSelectItem={(evt) => console.log('selected', evt.detail)}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="single-deselect" label="Single deselect" type={'single-deselect'} onSelectItem={(evt) => console.log('selected', evt.detail)} onDeselectItem={(evt) => console.log('deselected', evt.detail)}>
+                        <MatSelect name="single-deselect" label="Single deselect" type={'single-deselect'}
+                                   onSelectItem={(evt) => console.log('selected', evt.detail)}
+                                   onDeselectItem={(evt) => console.log('deselected', evt.detail)}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
@@ -46,7 +50,8 @@ export class SelectPage extends st.component {
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="readonlyWithValue" label="Readonly with value" type={'multiple'} readonly={true}>
+                        <MatSelect name="readonlyWithValue" label="Readonly with value" type={'multiple'}
+                                   readonly={true}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}
                                                                                     selected={true}/>)}
                         </MatSelect>
@@ -61,6 +66,20 @@ export class SelectPage extends st.component {
                         <MatSelect name="disabled" label="disabled" type={'multiple'} disabled={true}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}
                                                                                     selected={true}/>)}
+                        </MatSelect>
+                    </div>
+                    <div class={['col', 's12']}>
+                        <MatSelect name="image" label="image">
+                            <MatSelectItem value={'GOAT'} label={'Goat'} selected={true}>
+                                <img class={'left'} src={require('../static/images/goat.svg')}/>
+                            </MatSelectItem>
+                        </MatSelect>
+                    </div>
+                    <div class={['col', 's12']}>
+                        <MatSelect name="imageColored" label="imageColored">
+                            <MatSelectItem value={'GOAT'} label={'Goat'} selected={true}>
+                                <MatIcon class="color left" src={require('../static/images/goat.svg')}/>
+                            </MatSelectItem>
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>

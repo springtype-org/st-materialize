@@ -191,7 +191,9 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
 
     onResize = () => {
         const bounding = this.inputFieldRef.getBoundingClientRect();
-        this.matDropdownRef.el.setAttribute('style', `width: ${bounding.width}px`)
+        const height = bounding.y + bounding.height;
+        const boundingDocument = document.documentElement.getBoundingClientRect();
+        this.matDropdownRef.el.setAttribute('style', `width: ${bounding.width}px; max-height: ${boundingDocument.height - height}px`)
     };
 
     onItemSelect = (evt: IEvent<MatSelectItemClickDetail>) => {
