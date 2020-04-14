@@ -24,6 +24,14 @@ export class MatModal extends st.component<IMatModalAttrs> implements ILifecycle
     @ref
     containerRef!: HTMLElement;
 
+    onAfterElCreate(): void {
+
+        this.el.addEventListener('animationstart', (e) => {
+            if (e.animationName === 'fade-in') {
+                this.containerRef.classList.add('did-fade-in');
+            }
+        });
+    }
 
     render() {
         return <fragment>
@@ -45,8 +53,12 @@ export class MatModal extends st.component<IMatModalAttrs> implements ILifecycle
     }
 
     toggle() {
-        this.open = !this.open;
-        this.setVisible(this.open);
+        this.setVisible(!this.open);
+    }
+
+    show(show: boolean) {
+        this.open = show;
+        this.setVisible(show);
     }
 
     getContainerClasses() {
@@ -56,6 +68,8 @@ export class MatModal extends st.component<IMatModalAttrs> implements ILifecycle
         }
         if (this.open) {
             classes.push('open')
+        }else{
+            classes.push('modal-hide')
         }
         return classes.join(' ');
     }

@@ -11,6 +11,7 @@ import {LoadingIndicatorPage} from "./page/loading-indicator";
 import {LoaderCirclePage} from "./page/loader-circle";
 import {Container} from "./cmp/container";
 import {SelectPage} from "./page/select";
+import {TabsPage} from "./page/tabs";
 
 @component
 export class Main extends st.component {
@@ -76,6 +77,13 @@ export class Main extends st.component {
                                     }}>Mat-Loader-Circle</a>
                                 </Container>
                             </div>
+                            <div class={['col', 's12']}><br/>
+                                <Container tag="center">
+                                    <a class="btn" href="javascript:" onClick={() => st.route = {
+                                        path: 'tabs'
+                                    }}>Mat-Tabs</a>
+                                </Container>
+                            </div>
                         </div>
                     </div>
                 </Route>
@@ -102,6 +110,9 @@ export class Main extends st.component {
                 </Route>
                 <Route path={'select'}>
                     <SelectPage/>
+                </Route>
+                <Route path={'tabs'}>
+                    <TabsPage/>
                 </Route>
             </RouteList>
         </div>

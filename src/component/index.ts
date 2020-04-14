@@ -9,3 +9,6 @@ export * from "./mat-checkbox/mat-checkbox";
 export * from "./mat-select/mat-select";
 export * from "./mat-select/mat-select-drop-down";
 export * from "./mat-select/mat-select-item";
+export * from "./mat-tabs/mat-tab";
+export * from "./mat-tabs/mat-tabs";
+export * from "./mat-tabs/mat-tab-container";
