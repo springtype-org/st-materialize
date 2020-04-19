@@ -144,7 +144,14 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
             if (this.valueTransformer && typeof this.valueTransformer === TYPE_FUNCTION) {
                 return this.valueTransformer(this.selectedItems, this.items, this);
             } else {
-                return this.getValues()
+                const values = this.getValues()
+                switch (this.type) {
+                    case "multiple":
+                        return values;
+                    case "single":
+                    case "single-deselect":
+                        return values[0];
+                }
             }
         };
 
