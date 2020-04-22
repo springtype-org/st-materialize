@@ -3,10 +3,12 @@ import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
 import {MatForm} from "../../../src/component/form";
-import {MatSelect} from "../../../src/component/mat-select/mat-select";
-import {MatSelectItem} from "../../../src/component/mat-select/mat-select-item";
+import {MatSelect, MatSelectItem, required} from "../../../src/component";
 import {Container} from "../cmp/container";
 import {MatIcon} from "../../../src/component";
+import {REQUIRED} from "springtype/core/validate";
+import {validatorNameFactory} from "springtype/core/validate/function/validator-name-factory";
+
 
 @component
 export class SelectPage extends st.component {
@@ -34,7 +36,12 @@ export class SelectPage extends st.component {
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
-                        <MatSelect name="One" label="OneValue">
+                        <MatSelect name="One" label="OneValue"
+                                   validators={[required]}
+                                   validationErrorMessages={{
+                                       [REQUIRED]: 'This field is required',
+                                       same: 'Password are not equal'
+                                   }}>
                             {['value1', 'value2', 'value3'].map(v => <MatSelectItem value={v} label={v}/>)}
                         </MatSelect>
                     </div>
@@ -115,7 +122,7 @@ export class SelectPage extends st.component {
     }
 
     submitForm() {
-        const formState = this.formRef.getState();
+        const formState = this.formRef.validate();
         console.log(formState)
     }
 

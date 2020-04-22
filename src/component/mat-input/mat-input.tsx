@@ -286,7 +286,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     }
 
     onAfterValidate = (evt: IEvent<ValidationEventDetail>) => {
-        if (!this.readonly && !this.disabled) {
+        if (!this.disabled) {
             const details = evt.detail as ValidationEventDetail;
             this.helperTextRef.removeAttribute("data-error");
             this.inputRef.classList.remove('valid', 'invalid');

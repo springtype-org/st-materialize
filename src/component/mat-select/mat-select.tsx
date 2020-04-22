@@ -6,10 +6,16 @@ import {ref} from "springtype/core/ref";
 import {MatSelectItem, MatSelectItemClickDetail} from "./mat-select-item";
 import {MatInput} from "..";
 import {MatDropDown} from "./mat-select-drop-down";
-import {FORM_IGNORE_PROPERTY_NAME, FORM_VALUE_FUNCTION_KEY} from "../form";
+import {FORM_IGNORE_PROPERTY_NAME, FORM_VALUE_FUNCTION_KEY, ValidationEventDetail} from "../form";
 import {TYPE_FUNCTION} from "springtype/core/lang";
+import {VALIDATOR_NAME, validatorNameFactory} from "springtype/core/validate/function/validator-name-factory";
+import {REQUIRED} from "springtype/core/validate";
 
 export type MatSelectType = 'multiple' | 'single' | 'single-deselect';
+
+export const required = validatorNameFactory((selected: Array<MatSelectItem>) => {
+    return selected.length > 0;
+}, REQUIRED);
 
 export interface MatSelectItemDetail {
     value: string;
@@ -25,8 +31,15 @@ export interface IAttrMatSelect {
     readonly?: boolean;
 
     formIgnore?: boolean;
-    validators?: Array<(value: string) => Promise<boolean>>;
+    validationErrorMessages?: { [error: string]: string };
+    validationSuccessMessage?: string;
+
     valueTransformer?: (selected: Array<MatSelectItem>, items?: Array<MatSelectItem>, select?: MatSelect) => any;
+
+    debounceTimeInMs?: number;
+    eventListeners?: Array<string>;
+    validators?: Array<(selected: Array<MatSelectItem>, items: Array<MatSelectItem>, select: MatSelect) => Promise<boolean>>;
+    onValidation?: IEventListener<ValidationEventDetail>;
 
     onSelectItem?: IEventListener<MatSelectItemDetail>;
     onDeselectItem?: IEventListener<MatSelectItemDetail>;
@@ -56,7 +69,19 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
     formIgnore: boolean = false;
 
     @attr
-    validators: Array<(value: any) => Promise<boolean>> = [];
+    validators: Array<(selected: Array<MatSelectItem>, items: Array<MatSelectItem>, select: MatSelect) => Promise<boolean>> = [];
+
+    @attr
+    eventListeners!: Array<string>;
+
+    @attr
+    debounceTimeInMs!: number;
+
+    @attr
+    validationErrorMessages: { [error: string]: string } = {};
+
+    @attr
+    validationSuccessMessage: string = '';
 
     @attr
     valueTransformer!: (selected: Array<MatSelectItem>, items: Array<MatSelectItem>, select: MatSelect) => any;
@@ -106,6 +131,7 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
     class = [];
 
     render() {
+
         return <div ref={{inputFieldRef: this}} class={['input-field']}>
             <div class={['select-wrapper', this.readonly ? 'readonly' : '', this.disabled ? 'disabled' : '']}
                  onClick={() => this.toggleSelect()}>
@@ -113,9 +139,16 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
                           formIgnore={true}
                           disabled={this.disabled}
                           class="select-dropdown" type="text" readonly={true}
-                          validators={this.validators}
+                          validators={this.validators.map(fun => validatorNameFactory(
+                              (value: any) => fun(this.selectedItems, this.items, this),
+                              (fun as any)[VALIDATOR_NAME]
+                          ))}
+                          eventListeners={this.eventListeners}
+                          debounceTimeInMs={this.debounceTimeInMs}
+                          validationErrorMessages={this.validationErrorMessages}
+                          validationSuccessMessage={this.validationSuccessMessage}
                 />
-                <input ref={{inputHiddenRef: this}} name={this.name} disabled hidden={true}/>
+                <input ref={{inputHiddenRef: this}} name={this.name} hidden={true}/>
                 <MatDropDown ref={{matDropdownRef: this}} onSelectItemClick={(evt) => this.onItemSelect(evt)}>
                     {this.renderChildren()}
                 </MatDropDown>
@@ -171,7 +204,6 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
 
     toggleSelect() {
         if (!this.disabled && !this.readonly) {
-
             this.open = !this.open;
             if (!this.disabled) {
                 this.onResize();
@@ -256,6 +288,18 @@ export class MatSelect extends st.component<IAttrMatSelect> implements ILifecycl
         this.setMatSelectedItem(eventDetail);
 
         this.updateSelectValue();
+
+        this.matInputRef.inputRef.dispatchEvent(new Event('change', {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+        }));
+        this.matInputRef.inputRef.dispatchEvent(new Event('keyup', {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+        }));
+
     };
 
     setMatSelectedItem(detail: MatSelectItemClickDetail) {

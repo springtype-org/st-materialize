@@ -102,7 +102,6 @@ export class MatTabs extends st.component<IAttrMatTabs> implements ILifecycle {
     }
 
     onResize =() => {
-            console.log('onREsize')
         if (this.activeTab) {
             this.resize(this.activeTab)
         }

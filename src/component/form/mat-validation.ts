@@ -2,6 +2,7 @@ import {attr, component, event} from "springtype/web/component";
 import {st} from "springtype/core";
 import {IEventListener} from "springtype/web/component/interface";
 import {matGetConfig} from "../../config";
+import {VALIDATOR_NAME} from "springtype/core/validate/function/validator-name-factory";
 
 export interface IAttrValidation {
     debounceTimeInMs?: number;
@@ -70,7 +71,7 @@ export class MatValidation extends st.component<IAttrValidation> {
     onDisconnect(): void {
         super.onDisconnect();
         for (const eventListener of this.eventListeners) {
-            this.el.removeEventListener(eventListener, () => this.onTargetEvent(eventListener));
+            this.el.removeEventListener(eventListener, this.onTargetEvent(eventListener));
         }
     }
 
@@ -119,7 +120,7 @@ export class MatValidation extends st.component<IAttrValidation> {
                                     for (const validator of this.validators) {
                                         if (!await validator(value)) {
                                             valid = false;
-                                            errors.push((validator as any)['VALIDATOR_NAME']);
+                                            errors.push((validator as any)[VALIDATOR_NAME]);
                                         }
                                     }
                                     this.state = Object.freeze({validated: true, value: value, valid: valid, errors: errors});
@@ -178,10 +179,11 @@ export class MatValidation extends st.component<IAttrValidation> {
      }*/
 
     onTargetEvent = (eventListener: string) => (evt: Event) => {
-        if (this.target === evt.target) {
-            //do validation
-            this.validate();
-        }
+            if (this.target === evt.target) {
+                //do validation
+                this.validate();
+            }
+
     };
 
     getValue(): string | number | boolean | Date | null | undefined {
