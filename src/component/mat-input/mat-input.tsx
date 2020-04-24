@@ -152,10 +152,10 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
             internalValidators.push(minLength(this.minLength))
         }
         if (typeof this.max !== TYPE_UNDEFINED) {
-            internalValidators.push(min(this.min))
+            internalValidators.push(max(this.max))
         }
         if (typeof this.min !== TYPE_UNDEFINED) {
-            internalValidators.push(max(this.max))
+            internalValidators.push(min(this.min))
         }
         if (typeof this.pattern !== TYPE_UNDEFINED) {
             internalValidators.push(pattern(this.pattern))

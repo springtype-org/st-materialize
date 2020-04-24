@@ -13,7 +13,7 @@ import {REQUIRED} from "springtype/core/validate";
 
 export type MatSelectType = 'multiple' | 'single' | 'single-deselect';
 
-export const required = validatorNameFactory((selected: Array<MatSelectItem>) => {
+export const select_required = validatorNameFactory((selected: Array<MatSelectItem>) => {
     return selected.length > 0;
 }, REQUIRED);
 

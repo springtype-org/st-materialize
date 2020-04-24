@@ -3,7 +3,7 @@ import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
 import {MatForm} from "../../../src/component/form";
-import {MatSelect, MatSelectItem, required} from "../../../src/component";
+import {MatSelect, MatSelectItem, select_required} from "../../../src/component";
 import {Container} from "../cmp/container";
 import {MatIcon} from "../../../src/component";
 import {REQUIRED} from "springtype/core/validate";
@@ -37,7 +37,7 @@ export class SelectPage extends st.component {
                     </div>
                     <div class={['col', 's12']}>
                         <MatSelect name="One" label="OneValue"
-                                   validators={[required]}
+                                   validators={[select_required]}
                                    validationErrorMessages={{
                                        [REQUIRED]: 'This field is required',
                                        same: 'Password are not equal'
