@@ -1,4 +1,5 @@
-import {st} from "springtype/core";
+import {globalThis} from "springtype/core";
+export const WINDOW_MAT_CONFIG_KEY = '$st-mat';
 
 export interface MatConfig {
     setValidClass: boolean;
@@ -9,12 +10,19 @@ export interface MatConfig {
 export const matDefaultConfig: MatConfig = {
     setValidClass: false,
     validationDebounceTimeInMs: 250,
-    validationEventListener: ['change', 'keyup']};
+    validationEventListener: ['change', 'keyup'],
+};
+
+globalThis[WINDOW_MAT_CONFIG_KEY] = matDefaultConfig;
 
 export const matSetConfig = (config: MatConfig = matDefaultConfig) => {
-    (st as any).mat = config;
+    globalThis[WINDOW_MAT_CONFIG_KEY] = config;
 };
 
 export const matGetConfig = (): MatConfig => {
-    return (st as any).mat || matDefaultConfig
+    return globalThis[WINDOW_MAT_CONFIG_KEY]
 };
+
+
+
+
