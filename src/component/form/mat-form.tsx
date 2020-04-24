@@ -1,6 +1,6 @@
 import {attr, component, event} from "springtype/web/component";
 import {st} from "springtype/core";
-import {IEventListener} from "springtype/web/component/interface";
+import {IEventListener, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
 import {MatValidation, VALIDATION_PROPERTY_NAME} from "./mat-validation";
@@ -149,8 +149,16 @@ export class MatForm extends st.component<IAttrForm> {
         for (const form of htmlCollectionToArray<any>(this.formRef.querySelectorAll('form'))) {
             if (form[FORM_PROPERTY_NAME] && form[FORM_PROPERTY_NAME] instanceof MatForm) {
                 const nestedForm = form[FORM_PROPERTY_NAME] as MatForm;
-                if (nestedForm.parent === this) {
+                if (!!nestedForm && nestedForm === this) {
                     forms.push(nestedForm);
+                    continue;
+                }
+                let parent: ILifecycle | undefined = nestedForm.parent;
+                while (!!parent) {
+                    parent = parent.parent;
+                    if (!!parent && parent instanceof MatForm && parent === this) {
+                       forms.push(nestedForm);
+                    }
                 }
             } else {
                 st.error('Using an nested form, please use <MatForm name="formName">', form);
