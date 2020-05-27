@@ -15,12 +15,12 @@
   "license": "MIT",
   "peerDependencies": {
     "@types/materialize-css": "^1.0.7",
-    "springtype": "^2.0.0-beta.83",
-    "materialize-css": "^1.0.0",
-    "st-validate": "^1.0.1",
-    "st-form": "^1.0.0"
+    "materialize-css": "^1.0.0"
   },
   "devDependencies": {
+    "st-validate": "^1.0.1",
+    "springtype": "^2.0.0-beta.83",
+    "st-form": "^1.0.0",
     "typescript": "^3.7.4"
   }
 }
