@@ -6,10 +6,10 @@
   },
   "description": "A SpringType Materialize component library project. https://materializecss.com/",
   "scripts": {
-    "clean": "st-run st-rm-rf dist",
+    "clean": "npx st-rm-rf dist",
     "prebuild": "yarn clean",
     "build": "tsc",
-    "postbuild": "st-run st-cp package.json .npmignore README.md LICENSE static/index.scss static/scss dist"
+    "postbuild": "npx st-cp package.json .npmignore README.md LICENSE static/index.scss static/scss dist"
   },
   "author": "Michael Mannseicher <m.mansi1@gmx.net> & Aron Homberg <info@aron-homberg.de>",
   "license": "MIT",
@@ -18,7 +18,9 @@
     "materialize-css": "^1.0.0"
   },
   "devDependencies": {
-    "springtype": "^2.0.0-beta.66",
+    "st-validate": "^1.0.1",
+    "springtype": "^2.0.0-beta.83",
+    "st-form": "^1.0.0",
     "typescript": "^3.7.4"
   }
 }

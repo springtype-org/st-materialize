@@ -1,6 +1,7 @@
-export const getSvgFromSource = async (src: string) : Promise<Element> => {
-    const response = await fetch(src);
-    const svgText = await response.text();
+import {resolveRequire} from "../component/function/resolve-require";
+
+export const getSvgFromSource = async (srcOrModule: string| {default: string}): Promise<Element> => {
+    const svgText =   await fetch(resolveRequire(srcOrModule)).then( r => r.text());
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(svgText, "text/xml");
 

@@ -2,7 +2,7 @@ import {st} from "springtype/core";
 import {ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
-import {getSvgFromSource} from "../../function/get-svg-from-source";
+import {getSvgFromSource} from "../../function";
 
 export interface AttrMatIcon {
     src: string;
@@ -27,5 +27,7 @@ export class MatIcon extends st.component<AttrMatIcon> implements ILifecycle {
         let svgFromSource = await getSvgFromSource(this.src);
         // Replace image with new SVG
         this.el.appendChild(svgFromSource);
+
+
     }
 }

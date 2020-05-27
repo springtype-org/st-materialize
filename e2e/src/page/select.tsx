@@ -2,22 +2,22 @@ import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
-import {MatForm} from "../../../src/component/form";
 import {MatSelect, MatSelectItem, select_required} from "../../../src/component";
 import {Container} from "../cmp/container";
 import {MatIcon} from "../../../src/component";
-import {REQUIRED} from "springtype/core/validate";
-import {validatorNameFactory} from "springtype/core/validate/function/validator-name-factory";
+import {resolveRequire} from "../../../src/component/function/resolve-require";
+import {Form} from "st-form";
+import {REQUIRED} from "st-validate";
 
 
 @component
 export class SelectPage extends st.component {
     @ref
-    formRef!: MatForm;
+    formRef!: Form;
 
     render() {
         return <div class={'container'}>
-            <MatForm ref={{formRef: this}}>
+            <Form ref={{formRef: this}}>
                 <div class={'row'}>
                     <div class={['col', 's12']}>
                         <h4>Mat-Select</h4>
@@ -78,17 +78,21 @@ export class SelectPage extends st.component {
                     <div class={['col', 's12']}>
                         <MatSelect name="image" label="image">
                             <MatSelectItem value={'GOAT'} label={'Goat'} selected={true}>
-                                <img class={'left'} src={require('../static/images/goat.svg')}/>
+                                <img class={'left'} src={resolveRequire(resolveRequire(require('../static/images/goat.svg')))}/>
                             </MatSelectItem>
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
                         <MatSelect name="imageColored" label="imageColored">
-                            <MatSelectItem value={'GOAT'} label={'Goat'} selected={true}>
-                                <MatIcon class="color left" src={require('../static/images/goat.svg')}/>
+                            <MatSelectItem value={'GOAT_1'} label={'Goat'} selected={true}>
+                                <MatIcon class="color left" src={resolveRequire(require('../static/images/goat.svg'))}/>
+                            </MatSelectItem>
+                            <MatSelectItem value={'GOAT_2'} label={'Goat'}>
+                                <MatIcon class="color left" src={resolveRequire(require('../static/images/goat.svg'))}/>
                             </MatSelectItem>
                         </MatSelect>
                     </div>
+
                     <div class={['col', 's12']}>
                         <MatSelect name="onwValueTransformer" label="Own value transformer" type={'multiple'}
                                    valueTransformer={(selected: Array<MatSelectItem>) => {
@@ -117,7 +121,7 @@ export class SelectPage extends st.component {
                         </Container>
                     </div>
                 </div>
-            </MatForm>
+            </Form>
         </div>
     }
 

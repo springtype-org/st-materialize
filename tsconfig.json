@@ -1,10 +1,7 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es5",
 		"outDir": "dist",
 		"moduleResolution": "node",
-		"esModuleInterop": true,
 		"strict": true,
 		"noUnusedLocals": true,
 		"noEmitHelpers": false,
