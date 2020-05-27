@@ -1,4 +1,3 @@
-
 {
   "name": "st-materialize",
   "version": "1.0.0-beta.36",
@@ -16,13 +15,12 @@
   "license": "MIT",
   "peerDependencies": {
     "@types/materialize-css": "^1.0.7",
-    "materialize-css": "^1.0.0"
+    "springtype": "^2.0.0-beta.83",
+    "materialize-css": "^1.0.0",
+    "st-validate": "^1.0.1",
+    "st-form": "^1.0.0"
   },
   "devDependencies": {
-    "springtype": "^2.0.0-beta.83",
     "typescript": "^3.7.4"
-  },
-  "dependencies": {
-    "st-validate": "^1.0.1"
   }
 }

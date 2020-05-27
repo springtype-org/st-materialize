@@ -4,12 +4,12 @@ import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function";
-import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, pattern, required} from "st-validate";
 import {min} from "st-validate/validate/min";
 import {max} from "st-validate/validate/max";
 import {matGetConfig} from "../../config";
+import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, Validation, ValidationEventDetail} from "st-form";
 
 export interface IAttrMatTextInput extends IAttrValidation {
     label?: string;
@@ -130,7 +130,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
     counterRef!: HTMLSpanElement;
 
     @ref
-    validationRef!: MatValidation;
+    validationRef!: Validation;
 
     inputId: string;
 
@@ -167,7 +167,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                            class={[this.value || this.placeholder || this.type === 'date' ? 'active' : '']}
                            for={this.inputId}>{this.label}</label>
         }
-        return <MatValidation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
+        return <Validation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
                               eventListeners={this.eventListeners} debounceTimeInMs={this.debounceTimeInMs}
                               onValidation={(evt) => this.onAfterValidate(evt)}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
@@ -203,7 +203,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                     </span>
                 </div>
             </div>
-        </MatValidation>
+        </Validation>
     }
 
     onAfterRender(): void {

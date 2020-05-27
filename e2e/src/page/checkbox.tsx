@@ -3,17 +3,17 @@ import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
 import {Container} from "../cmp/container";
 import {ref} from "springtype/core/ref";
-import {MatForm} from "../../../src/component/form";
 import {MatCheckbox} from "../../../src/component";
+import {Form} from "st-form";
 
 @component
 export class CheckboxPage extends st.component {
     @ref
-    formRef!: MatForm;
+    formRef!: Form;
 
     render() {
         return <div class={'container'}>
-            <MatForm ref={{formRef: this}}>
+            <Form ref={{formRef: this}}>
                 <div class={'row'}>
                     <div class={['col', 's12']}>
                         <h4>Mat-Checkbox</h4>
@@ -46,7 +46,7 @@ export class CheckboxPage extends st.component {
                         </Container>
                     </div>
                 </div>
-            </MatForm>
+            </Form>
         </div>
     }
 

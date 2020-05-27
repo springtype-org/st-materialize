@@ -2,23 +2,22 @@ import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
-import {MatForm} from "../../../src/component/form";
 import {MatSelect, MatSelectItem, select_required} from "../../../src/component";
 import {Container} from "../cmp/container";
 import {MatIcon} from "../../../src/component";
-import {REQUIRED} from "springtype/core/validate";
-import {validatorNameFactory} from "springtype/core/validate/function/validator-name-factory";
 import {resolveRequire} from "../../../src/component/function/resolve-require";
+import {Form} from "st-form";
+import {REQUIRED} from "st-validate";
 
 
 @component
 export class SelectPage extends st.component {
     @ref
-    formRef!: MatForm;
+    formRef!: Form;
 
     render() {
         return <div class={'container'}>
-            <MatForm ref={{formRef: this}}>
+            <Form ref={{formRef: this}}>
                 <div class={'row'}>
                     <div class={['col', 's12']}>
                         <h4>Mat-Select</h4>
@@ -122,7 +121,7 @@ export class SelectPage extends st.component {
                         </Container>
                     </div>
                 </div>
-            </MatForm>
+            </Form>
         </div>
     }
 

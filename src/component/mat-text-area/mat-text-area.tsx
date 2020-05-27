@@ -4,11 +4,11 @@ import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function";
-import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {IVirtualNode} from "springtype/web/vdom/interface";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {matGetConfig} from "../../config";
 import {maxLength, minLength, required} from "st-validate";
+import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, Validation, ValidationEventDetail} from "st-form";
 
 export interface IAttrMatTextArea extends IAttrValidation {
     label?: string | IVirtualNode;
@@ -123,7 +123,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
     counterRef!: HTMLSpanElement;
 
     @ref
-    validationRef!: MatValidation;
+    validationRef!: Validation;
 
     textAreaId: string;
 
@@ -153,7 +153,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                            class={[this.value || this.placeholder ? 'active' : '']}
                            for={this.textAreaId}>{this.label}</label>
         }
-        return <MatValidation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
+        return <Validation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
                               onValidation={(evt:IEvent<ValidationEventDetail>) => this.onAfterValidate(evt)}
                               debounceTimeInMs={this.debounceTimeInMs}
                               eventListeners={this.eventListeners}>
@@ -194,7 +194,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                     </span>
                 </div>
             </div>
-        </MatValidation>
+        </Validation>
     }
 
     onAfterRender(): void {

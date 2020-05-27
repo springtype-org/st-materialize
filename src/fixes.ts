@@ -1,10 +1,7 @@
 import {globalThis} from "springtype/core";
-import {matGetConfig, WINDOW_MAT_CONFIG_KEY} from "./config";
+import {WINDOW_MAT_CONFIG_KEY} from "./config";
 
 const MAT_FIXES = 'fixes';
-
-//load configuration
-matGetConfig() ;
 
 if (!globalThis[WINDOW_MAT_CONFIG_KEY][MAT_FIXES]) {
     const fixViewPortHeight = () => {

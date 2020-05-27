@@ -17,14 +17,14 @@ import {
 } from "st-validate";
 import {Container} from "../cmp/container";
 import {ref} from "springtype/core/ref";
-import {MatForm} from "../../../src/component/form";
 import {MatIcon, MatInput} from "../../../src/component";
 import {resolveRequire} from "../../../src/component/function/resolve-require";
+import {Form} from "st-form";
 
 @component
 export class InputPage extends st.component {
     @ref
-    formRef!: MatForm;
+    formRef!: Form;
 
     @ref
     inputTextRef!: MatInput;
@@ -40,7 +40,7 @@ export class InputPage extends st.component {
 
     render() {
         return <div class={'container'}>
-            <MatForm ref={{formRef: this}}>
+            <Form ref={{formRef: this}}>
                 <div class={'row'}>
                     <div class={['col', 's12']}>
                         <h4>MatInput</h4>
@@ -173,7 +173,7 @@ export class InputPage extends st.component {
                         </Container>
                     </div>
                 </div>
-            </MatForm>
+            </Form>
         </div>
     }
 

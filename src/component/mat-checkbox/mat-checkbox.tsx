@@ -4,7 +4,7 @@ import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
 import {required} from "st-validate";
-import {FORM_IGNORE_PROPERTY_NAME, MatValidation, ValidationEventDetail} from "../form";
+import {FORM_IGNORE_PROPERTY_NAME, Validation, ValidationEventDetail} from "st-form";
 import {matGetConfig} from "../../config";
 
 export interface IMatCheckboxAttrs {
@@ -61,7 +61,7 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
     inputRef!: HTMLInputElement;
 
     @ref
-    validationRef!: MatValidation;
+    validationRef!: Validation;
 
 
     render() {
@@ -69,14 +69,14 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
         if (this.required) {
             validators.push(required);
         }
-        return <MatValidation ref={{validationRef: this}} validators={validators}
-                              onValidation={(evt) => this.onAfterValidate(evt)}
-                              debounceTimeInMs={this.debounceTimeInMs} eventListeners={this.eventListeners}>
+        return <Validation ref={{validationRef: this}} validators={validators}
+                           onValidation={(evt) => this.onAfterValidate(evt)}
+                           debounceTimeInMs={this.debounceTimeInMs} eventListeners={this.eventListeners}>
             <input ref={{inputRef: this}} name={this.name} type="checkbox"
                    disabled={this.disabled} checked={this.checked}
                    class={[this.filled ? 'filled-in' : '']}/>
             <span>{this.label}</span>
-        </MatValidation>
+        </Validation>
     }
 
     onAfterRender(): void {
@@ -105,6 +105,7 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
     setChecked(checked: boolean) {
         return this.inputRef.checked = checked;
     }
+
     async validate(force: boolean = false) {
         return await this.validationRef.validate(force);
     }

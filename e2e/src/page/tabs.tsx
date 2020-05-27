@@ -2,14 +2,11 @@ import {st} from "springtype/core";
 import {component} from "springtype/web/component";
 import {tsx} from "springtype/web/vdom";
 import {ref} from "springtype/core/ref";
-import {MatForm} from "../../../src/component/form";
 import {getUniqueHTMLId, MatTab, MatTabContainer, MatTabs} from "../../../src";
+import {Form} from "st-form";
 
 @component
 export class TabsPage extends st.component {
-    @ref
-    formRef!: MatForm;
-
 
     render() {
         const firstDataTabId = getUniqueHTMLId();
