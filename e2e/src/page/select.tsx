@@ -78,17 +78,21 @@ export class SelectPage extends st.component {
                     <div class={['col', 's12']}>
                         <MatSelect name="image" label="image">
                             <MatSelectItem value={'GOAT'} label={'Goat'} selected={true}>
-                                <img class={'left'} src={require('../static/images/goat.svg')}/>
+                                <img class={'left'} src={require('../static/images/goat.svg').default}/>
                             </MatSelectItem>
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
                         <MatSelect name="imageColored" label="imageColored">
-                            <MatSelectItem value={'GOAT'} label={'Goat'} selected={true}>
+                            <MatSelectItem value={'GOAT_1'} label={'Goat'} selected={true}>
+                                <MatIcon class="color left" src={require('../static/images/goat.svg')}/>
+                            </MatSelectItem>
+                            <MatSelectItem value={'GOAT_2'} label={'Goat'}>
                                 <MatIcon class="color left" src={require('../static/images/goat.svg')}/>
                             </MatSelectItem>
                         </MatSelect>
                     </div>
+
                     <div class={['col', 's12']}>
                         <MatSelect name="onwValueTransformer" label="Own value transformer" type={'multiple'}
                                    valueTransformer={(selected: Array<MatSelectItem>) => {

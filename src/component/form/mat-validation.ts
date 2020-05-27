@@ -1,8 +1,8 @@
 import {attr, component, event} from "springtype/web/component";
 import {st} from "springtype/core";
 import {IEventListener} from "springtype/web/component/interface";
-import {matGetConfig} from "../../config";
 import {VALIDATOR_NAME} from "springtype/core/validate/function/validator-name-factory";
+import {matGetConfig} from "../../config";
 
 export interface IAttrValidation {
     debounceTimeInMs?: number;

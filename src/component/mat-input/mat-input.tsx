@@ -1,9 +1,9 @@
-import {st} from "springtype/core";
+import { st} from "springtype/core";
 import {IEvent, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
-import {getUniqueHTMLId} from "../../function/get-unique-html-id";
+import {getUniqueHTMLId} from "../../function";
 import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
 import {maxLength, minLength, pattern, required} from "springtype/core/validate";
@@ -172,7 +172,7 @@ export class MatInput extends st.component<IAttrMatTextInput> implements ILifecy
                               onValidation={(evt) => this.onAfterValidate(evt)}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
-                <input tabIndex={0} ref={{inputRef: this}} attrs={{
+                <input tabIndex={0} ref={{inputRef: this}} {...{
                     id: this.inputId,
                     name: this.name,
                     type: this.type,

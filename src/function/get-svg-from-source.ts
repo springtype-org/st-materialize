@@ -1,6 +1,13 @@
-export const getSvgFromSource = async (src: string) : Promise<Element> => {
-    const response = await fetch(src);
-    const svgText = await response.text();
+import {TYPE_STRING} from "springtype/core/lang";
+
+export const getSvgFromSource = async (srcOrModule: string| {default: string}): Promise<Element> => {
+    let src;
+    if(typeof srcOrModule === TYPE_STRING){
+        src = srcOrModule;
+    }else{
+        src = (srcOrModule as any).default
+    }
+    const svgText =   await fetch(src).then( r => r.text());
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(svgText, "text/xml");
 

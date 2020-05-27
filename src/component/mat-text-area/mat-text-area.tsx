@@ -3,7 +3,7 @@ import {IEvent, ILifecycle} from "springtype/web/component/interface";
 import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
-import {getUniqueHTMLId} from "../../function/get-unique-html-id";
+import {getUniqueHTMLId} from "../../function";
 import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {IVirtualNode} from "springtype/web/vdom/interface";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
@@ -133,7 +133,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
         this.textAreaId = getUniqueHTMLId();
     }
 
-    render() {
+    render(): IVirtualNode {
         const internalValidators = [];
 
         if (typeof this.required !== TYPE_UNDEFINED) {
@@ -146,7 +146,7 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
             internalValidators.push(minLength(this.minLength))
         }
 
-        let label;
+        let label: any;
 
         if (this.label) {
             label = <label ref={{labelRef: this}}
@@ -154,14 +154,14 @@ export class MatTextArea extends st.component<IAttrMatTextArea> implements ILife
                            for={this.textAreaId}>{this.label}</label>
         }
         return <MatValidation ref={{validationRef: this}} validators={mergeArrays(internalValidators, this.validators)}
-                              onValidation={(evt) => this.onAfterValidate(evt)}
+                              onValidation={(evt:IEvent<ValidationEventDetail>) => this.onAfterValidate(evt)}
                               debounceTimeInMs={this.debounceTimeInMs}
                               eventListeners={this.eventListeners}>
             <div class={['input-field']} style={{display: this.hidden ? 'none' : ''}}>
                 {this.renderChildren()}
                 <textarea ref={{textAreaRef: this}} class={['materialize-textarea']}
                           style={{height: `${this.getHeight(this.value)}px`}}
-                          attrs={{
+                          {...{
                               id: this.textAreaId,
                               name: this.name,
                               placeholder: this.placeholder,

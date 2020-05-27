@@ -18,7 +18,7 @@
     "materialize-css": "^1.0.0"
   },
   "devDependencies": {
-    "springtype": "^2.0.0-beta.66",
+    "springtype": "^2.0.0-beta.82",
     "typescript": "^3.7.4"
   }
 }

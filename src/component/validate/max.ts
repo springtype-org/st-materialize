@@ -2,7 +2,7 @@ import {validatorNameFactory} from "springtype/core/validate/function/validator-
 import {TYPE_STRING} from "springtype/core/lang";
 import {st} from "springtype/core";
 
-const VALIDATOR_NAME = 'min';
+const VALIDATOR_NAME = 'max';
 
 export const max = (maximum: number | Date) => validatorNameFactory((value: number | Date): boolean => {
     if (typeof value === TYPE_STRING) {
