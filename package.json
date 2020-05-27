@@ -1,6 +1,6 @@
 {
   "name": "st-materialize",
-  "version": "1.0.0-beta.36",
+  "version": "1.0.0-beta.42",
   "publishConfig": {
     "access": "public"
   },
