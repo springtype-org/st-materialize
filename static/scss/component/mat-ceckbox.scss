@@ -19,3 +19,7 @@ input[type="checkbox"]:not(:checked):not(.filled-in).valid + span:not(.lever):be
 input[type="checkbox"].valid + span:not(.lever):after {
   border: 2px solid $input-success-color !important;
 }
+
+input[type="checkbox"][readonly] + span{
+  pointer-events: none;
+}

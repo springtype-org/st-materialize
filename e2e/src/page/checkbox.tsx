@@ -41,6 +41,9 @@ export class CheckboxPage extends st.component {
                         <MatCheckbox name="required" label="Required" required={true}/>
                     </div>
                     <div class={['col', 's12']}>
+                        <MatCheckbox name="readonly" label="ReadOnly" readonly={true}/>
+                    </div>
+                    <div class={['col', 's12']}>
                         <Container tag={"center"}>
                             <button class="btn" onClick={() => this.submitForm()}>Validate</button>
                         </Container>

@@ -11,6 +11,7 @@ export interface IMatCheckboxAttrs {
     name: string;
     label: string;
     required?: boolean;
+    readonly?: boolean;
     checked?: boolean;
     formIgnore?: boolean;
     setValidClass?: boolean;
@@ -51,6 +52,9 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
     filled: boolean = false;
 
     @attr
+    readonly: boolean = false;
+
+    @attr
     eventListeners!: Array<string>;
 
     @attr
@@ -73,8 +77,13 @@ export class MatCheckbox extends st.component<IMatCheckboxAttrs> implements ILif
                            onValidation={(evt) => this.onAfterValidate(evt)}
                            debounceTimeInMs={this.debounceTimeInMs} eventListeners={this.eventListeners}>
             <input ref={{inputRef: this}} name={this.name} type="checkbox"
-                   disabled={this.disabled} checked={this.checked}
-                   class={[this.filled ? 'filled-in' : '']}/>
+                   disabled={this.disabled} checked={this.checked} readOnly={this.readonly}
+                   class={[this.filled ? 'filled-in' : '']}
+                   onClick={(evt) => {
+                       if (this.readonly) {
+                           evt.preventDefault()
+                       }
+                   }}/>
             <span>{this.label}</span>
         </Validation>
     }

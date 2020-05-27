@@ -73,11 +73,7 @@ export class MatTabs extends st.component<IAttrMatTabs> implements ILifecycle {
         const event = evt as IEvent<TabClickDetail>;
         const detail = event.detail as TabClickDetail;
         if (this.activeTab !== detail.tab) {
-            this.activateTab(this.activeTab, false);
-            this.activeTab.setActive(false);
-            this.activeTab = detail.tab;
-            detail.tab.setActive(true);
-            this.activateTab(detail.tab, true);
+            this.setActive(detail.tab);
         }
     }
 
@@ -95,13 +91,21 @@ export class MatTabs extends st.component<IAttrMatTabs> implements ILifecycle {
         })
     }
 
+    setActive = (tab: MatTab) => {
+        this.activeTab.setActive(false);
+        this.activateTab(this.activeTab, false);
+        this.activeTab = tab;
+        this.activeTab.setActive(true);
+        this.activateTab(this.activeTab, true);
+    };
+
     resize(tab: MatTab) {
         const offsetLeft = tab.el.offsetLeft;
         const tabBounding = tab.el.getBoundingClientRect();
         this.indicatorRef.setAttribute('style', `left: ${offsetLeft}px; width: ${tabBounding.width}px;`)
     }
 
-    onResize =() => {
+    onResize = () => {
         if (this.activeTab) {
             this.resize(this.activeTab)
         }

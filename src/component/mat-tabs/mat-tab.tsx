@@ -77,6 +77,8 @@ export class MatTab extends st.component<IAttrMatTab> implements ILifecycle {
     }
 
     onAnchorClick() {
-        this.dispatchTabClick({tab: this});
+        if (!this.disabled) {
+            this.dispatchTabClick({tab: this});
+        }
     }
 }
