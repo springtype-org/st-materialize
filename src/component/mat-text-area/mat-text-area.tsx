@@ -7,16 +7,16 @@ import {getUniqueHTMLId} from "../../function";
 import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {IVirtualNode} from "springtype/web/vdom/interface";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
-import {maxLength, minLength, required} from "springtype/core/validate";
 import {matGetConfig} from "../../config";
+import {maxLength, minLength, required} from "st-validate";
 
 export interface IAttrMatTextArea extends IAttrValidation {
-    label: string | IVirtualNode;
-    helperText: string | IVirtualNode;
-    characterCounter: boolean;
+    label?: string | IVirtualNode;
+    helperText?: string | IVirtualNode;
+    characterCounter?: boolean;
 
-    validationErrorMessages: { [error: string]: string | IVirtualNode };
-    validationSuccessMessage: string;
+    validationErrorMessages?: { [error: string]: string | IVirtualNode };
+    validationSuccessMessage?: string;
     formIgnore?: boolean;
     setValidClass?: boolean;
 

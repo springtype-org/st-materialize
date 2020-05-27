@@ -6,9 +6,9 @@ import {ref} from "springtype/core/ref";
 import {getUniqueHTMLId} from "../../function";
 import {FORM_IGNORE_PROPERTY_NAME, IAttrValidation, MatValidation, ValidationEventDetail} from "../form";
 import {mergeArrays, TYPE_UNDEFINED} from "springtype/core/lang";
-import {maxLength, minLength, pattern, required} from "springtype/core/validate";
-import {min} from "../validate/min";
-import {max} from "../validate/max";
+import {maxLength, minLength, pattern, required} from "st-validate";
+import {min} from "st-validate/validate/min";
+import {max} from "st-validate/validate/max";
 import {matGetConfig} from "../../config";
 
 export interface IAttrMatTextInput extends IAttrValidation {

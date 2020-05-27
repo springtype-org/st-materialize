@@ -1,13 +1,7 @@
-import {TYPE_STRING} from "springtype/core/lang";
+import {resolveRequire} from "../component/function/resolve-require";
 
 export const getSvgFromSource = async (srcOrModule: string| {default: string}): Promise<Element> => {
-    let src;
-    if(typeof srcOrModule === TYPE_STRING){
-        src = srcOrModule;
-    }else{
-        src = (srcOrModule as any).default
-    }
-    const svgText =   await fetch(src).then( r => r.text());
+    const svgText =   await fetch(resolveRequire(srcOrModule)).then( r => r.text());
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(svgText, "text/xml");
 

@@ -3,7 +3,7 @@ import {IEvent, IEventListener, ILifecycle} from "springtype/web/component/inter
 import {tsx} from "springtype/web/vdom";
 import {attr, component} from "springtype/web/component";
 import {ref} from "springtype/core/ref";
-import {required} from "springtype/core/validate";
+import {required} from "st-validate";
 import {FORM_IGNORE_PROPERTY_NAME, MatValidation, ValidationEventDetail} from "../form";
 import {matGetConfig} from "../../config";
 

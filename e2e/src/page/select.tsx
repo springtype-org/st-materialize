@@ -8,6 +8,7 @@ import {Container} from "../cmp/container";
 import {MatIcon} from "../../../src/component";
 import {REQUIRED} from "springtype/core/validate";
 import {validatorNameFactory} from "springtype/core/validate/function/validator-name-factory";
+import {resolveRequire} from "../../../src/component/function/resolve-require";
 
 
 @component
@@ -78,17 +79,17 @@ export class SelectPage extends st.component {
                     <div class={['col', 's12']}>
                         <MatSelect name="image" label="image">
                             <MatSelectItem value={'GOAT'} label={'Goat'} selected={true}>
-                                <img class={'left'} src={require('../static/images/goat.svg').default}/>
+                                <img class={'left'} src={resolveRequire(resolveRequire(require('../static/images/goat.svg')))}/>
                             </MatSelectItem>
                         </MatSelect>
                     </div>
                     <div class={['col', 's12']}>
                         <MatSelect name="imageColored" label="imageColored">
                             <MatSelectItem value={'GOAT_1'} label={'Goat'} selected={true}>
-                                <MatIcon class="color left" src={require('../static/images/goat.svg')}/>
+                                <MatIcon class="color left" src={resolveRequire(require('../static/images/goat.svg'))}/>
                             </MatSelectItem>
                             <MatSelectItem value={'GOAT_2'} label={'Goat'}>
-                                <MatIcon class="color left" src={require('../static/images/goat.svg')}/>
+                                <MatIcon class="color left" src={resolveRequire(require('../static/images/goat.svg'))}/>
                             </MatSelectItem>
                         </MatSelect>
                     </div>

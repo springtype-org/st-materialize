@@ -8,8 +8,8 @@ import {MatInput} from "..";
 import {MatDropDown} from "./mat-select-drop-down";
 import {FORM_IGNORE_PROPERTY_NAME, FORM_VALUE_FUNCTION_KEY, ValidationEventDetail} from "../form";
 import {TYPE_FUNCTION} from "springtype/core/lang";
-import {VALIDATOR_NAME, validatorNameFactory} from "springtype/core/validate/function/validator-name-factory";
-import {REQUIRED} from "springtype/core/validate";
+import {VALIDATOR_NAME, validatorNameFactory} from "st-validate/function/validator-name-factory";
+import {REQUIRED} from "st-validate";
 
 export type MatSelectType = 'multiple' | 'single' | 'single-deselect';
 

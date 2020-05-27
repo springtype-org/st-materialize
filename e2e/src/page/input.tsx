@@ -13,13 +13,13 @@ import {
     SPECIAL,
     special,
     UPPERCASE,
-    uppercase
-} from "springtype/core/validate";
+    uppercase, validatorNameFactory
+} from "st-validate";
 import {Container} from "../cmp/container";
 import {ref} from "springtype/core/ref";
 import {MatForm} from "../../../src/component/form";
 import {MatIcon, MatInput} from "../../../src/component";
-import {validatorNameFactory} from "springtype/core/validate/function/validator-name-factory";
+import {resolveRequire} from "../../../src/component/function/resolve-require";
 
 @component
 export class InputPage extends st.component {
@@ -102,7 +102,7 @@ export class InputPage extends st.component {
                     </div>
                     <div class={['col', 's12']}>
                         <MatInput name="ownIcon" label={'Own svg icon'} value={"Own svg icon"}>
-                            <MatIcon src={require('../../static/icon/springtype-logo.svg')} class={['prefix']}/>
+                            <MatIcon src={resolveRequire(require('../../static/icon/springtype-logo.svg'))} class={['prefix']}/>
                         </MatInput>
                     </div>
                     <div class={['col', 's12']}>

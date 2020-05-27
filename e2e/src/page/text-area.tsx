@@ -5,6 +5,7 @@ import {ref} from "springtype/core/ref";
 import {Container} from "../cmp/container";
 import {MatForm} from "../../../src/component/form";
 import {MatIcon, MatTextArea} from "../../../src/component";
+import {resolveRequire} from "../../../src/component/function/resolve-require";
 
 @component
 export class TextAreaPage extends st.component {
@@ -58,7 +59,7 @@ export class TextAreaPage extends st.component {
                     </div>
                     <div class={['col', 's12']}>
                         <MatTextArea name="withCustomIcon" label={'Own svg icon'} value={"Own svg icon"}>
-                            <MatIcon src={require('../../static/icon/springtype-logo.svg')} class={['prefix']}/>
+                            <MatIcon src={resolveRequire(require('../../static/icon/springtype-logo.svg'))} class={['prefix']}/>
                         </MatTextArea>
                     </div>
                     <div class={['col', 's12']}>

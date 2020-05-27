@@ -5,7 +5,7 @@ import {MatForm} from "../../../src/component/form";
 import {ref} from "springtype/core/ref";
 import {Container} from "../cmp/container";
 import {MatInput} from "../../../src/component";
-import {required} from "springtype/core/validate";
+import {required} from "st-validate";
 
 @component
 export class FormPage extends st.component {
