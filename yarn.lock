@@ -7,10 +7,10 @@ springtype@^2.0.0-beta.83:
   resolved "https://registry.yarnpkg.com/springtype/-/springtype-2.0.0-beta.83.tgz#fe939763a03dc834de72ed078a15a9d78463db98"
   integrity sha512-pDqD5kiZzSmvyL3hztVlGSXN/iUOGNMOmx3CYWv6/o2GkI5dpKwqu1H32J5WFrrfOznPBn+uiqTFNTawgtIW6Q==
 
-st-form@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/st-form/-/st-form-1.0.0.tgz#21cf1d2e5511a4fe0293956691d6b1e563a142d6"
-  integrity sha512-+LVg+2kC7cRh63Zx1exFQUhA4IE0A1f37a4p1N5lix0s/7hk+nK1oe8fbQoOlUHqM7tOCICnEDCyQe0fD2e7wQ==
+st-form@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/st-form/-/st-form-1.0.1.tgz#8dcf011789f3a24879ebcdf5ee75edd07417a40a"
+  integrity sha512-ewmP6mQXHz/tjJqGjd1BA9tiv6Dm5+0/0C1LsV6XRaNQA6NTDJ0IcG7+HphoSrM1TzIGSBzgotGR7OyWo4v2/w==
 
 st-validate@^1.0.1:
   version "1.0.1"
